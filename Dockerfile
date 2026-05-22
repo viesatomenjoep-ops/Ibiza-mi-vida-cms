@@ -9,7 +9,7 @@ LABEL maintainer="Viesa Automations <tom@viesa.nl>"
 LABEL description="Ibiza Mi Vida CMS"
 
 # Remove default nginx config
-RUN rm /etc/nginx/conf.d/default.conf
+RUN apk add --no-cache curl && rm /etc/nginx/conf.d/default.conf
 
 # Copy nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
