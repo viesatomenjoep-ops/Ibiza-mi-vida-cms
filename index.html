@@ -813,7 +813,10 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             </div>
             <div>
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Hero Image / Banner</label>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <label style="margin:0">Hero Image / Banner</label>
+                  <span onclick="clearMedia('hero')" style="cursor:pointer;color:var(--danger);font-size:0.75rem">❌ Verwijderen</span>
+                </div>
                 <div class="img-upload-box" onclick="document.getElementById('hero-img-upload').click()">
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                   <div>Click to upload image (4K supported)</div>
@@ -823,12 +826,22 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 <div id="hero-preview"></div>
               </div>
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Logo Upload (Cloudinary)</label>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                  <label style="margin:0">Logo Upload (Cloudinary)</label>
+                  <span onclick="clearMedia('logo')" style="cursor:pointer;color:var(--danger);font-size:0.75rem">❌ Verwijderen</span>
+                </div>
                 <div class="img-upload-box" onclick="document.getElementById('logo-upload').click()">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   <div style="margin-top:0.4rem">Upload Logo (SVG / PNG)</div>
                 </div>
                 <input type="file" id="logo-upload" accept="image/*,.svg,.pdf" style="display:none" onchange="handleMediaUpload(this,'logo')">
+              </div>
+
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Media History (Laatst geüpload)</label>
+                <div id="media-history-container" style="display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.5rem">
+                  <div style="font-size:0.8rem;color:var(--text3)">Nog geen history beschikbaar.</div>
+                </div>
               </div>
               <div class="form-group">
                 <label>Extract from PDF</label>
@@ -4191,11 +4204,12 @@ async function savePageContent(){
 
   try {
     toast("Paginatekst opslaan...", "info");
+    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/page_contents`, {
       method: 'POST',
       headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'apikey': sbKey,
+        'Authorization': 'Bearer ' + sbKey,
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates'
       },
@@ -4230,97 +4244,38 @@ async function savePageContent(){
 
 function refreshPreview(){
   const tab   = currentPromoterTab;
-  const info  = PROMOTER_PAGES[tab] || {label:tab};
+  const info  = PROMOTER_PAGES[tab] || {label:tab, url:'ibizamivida.com'};
   const hero  = document.getElementById('page-hero-title').value || info.label;
   const sub   = document.getElementById('page-hero-sub').value   || '';
-  const desc  = document.getElementById('page-description').innerHTML || '';
-  const cta   = document.getElementById('page-cta').value        || 'Book Now';
   const heroImg = document.getElementById('hero-preview')?.querySelector('img')?.src || '';
 
-  /* Collect today's deals for this category */
-  const today = (document.getElementById('deal-date')||{}).value || new Date().toISOString().slice(0,10);
-  const deals = (dealOfDay[today]||{})[tab] || [];
-
-  /* Build Deal-of-the-Day strip */
-  const dealStrip = deals.length ? `
-    <div style="background:#111;border-radius:8px;padding:14px 16px;margin:16px 0">
-      <div style="font-size:11px;color:#d4a855;text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px">🔥 Deal of the Day</div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        ${deals.map(d=>`
-          <div style="background:#1a1a22;border:1px solid #2a2a35;border-radius:6px;padding:8px 12px;min-width:140px">
-            ${d.img?`<img src="${d.img}" style="width:100%;height:60px;object-fit:cover;border-radius:4px;margin-bottom:6px">`:''}
-            <div style="font-size:11px;font-weight:600;color:#f0ede8">${d.title}</div>
-            ${d.price?`<div style="font-size:12px;color:#d4a855;margin-top:2px">From €${d.price}</div>`:''}
-            <div style="margin-top:6px;background:#d4a855;color:#0a0a0f;font-size:10px;padding:3px 8px;border-radius:4px;display:inline-block;cursor:pointer">${cta}</div>
-          </div>`).join('')}
-      </div>
-    </div>` : '';
-
-  /* Collect events for this category */
-  const catEvents = allEvents.filter(e=>e.category===tab&&e.active).slice(0,4);
-  const evStrip = catEvents.length ? `
-    <div style="margin:16px 0">
-      <div style="font-size:11px;color:#a09d98;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px">All ${info.label} Events</div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
-        ${catEvents.map(e=>`
-          <div style="background:#1a1a22;border:1px solid #2a2a35;border-radius:6px;overflow:hidden">
-            ${e.image_url?`<img src="${e.image_url}" style="width:100%;height:72px;object-fit:cover">`:''}
-            <div style="padding:8px">
-              <div style="font-size:11px;font-weight:600;color:#f0ede8;margin-bottom:2px">${e.title}</div>
-              <div style="font-size:10px;color:#a09d98">${e.venue_name||''} ${e.event_date?'· '+new Date(e.event_date).toLocaleDateString('nl-BE'):''}</div>
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
-                <span style="color:#d4a855;font-size:11px;font-weight:600">€${e.price_from||'?'}</span>
-                <span style="background:#d4a855;color:#0a0a0f;font-size:9px;padding:2px 7px;border-radius:3px">${e.cta_label||'Book'}</span>
-              </div>
-            </div>
-          </div>`).join('')}
-      </div>
-    </div>` : '';
-
-  const srcdoc = `
-    <html>
-    <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      *{box-sizing:border-box;margin:0;padding:0}
-      body{background:#0a0a0f;color:#f0ede8;font-family:'Quicksand',sans-serif;font-size:14px;line-height:1.6}
-      nav{background:#111118;border-bottom:1px solid rgba(212,168,85,0.15);padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
-      .logo{font-family:'Quicksand',sans-serif;font-weight:700;color:#d4a855;font-size:16px}
-      .nav-links{display:flex;gap:14px;font-size:11px;color:#a09d98}
-      .hero{position:relative;min-height:180px;background:${heroImg?`url('${heroImg}') center/cover`:'linear-gradient(135deg,#1a1a2e,#0f0f1a)'};display:flex;align-items:center;padding:28px 20px}
-      .hero::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.55)}
-      .hero-content{position:relative;z-index:1}
-      h1{font-family:'Quicksand',sans-serif;font-weight:700;font-size:22px;color:#fff;margin-bottom:6px}
-      .hero-sub{font-size:12px;color:rgba(255,255,255,.75);margin-bottom:14px}
-      .cta-btn{display:inline-block;background:#d4a855;color:#0a0a0f;padding:8px 18px;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer}
-      .content{padding:16px 20px}
-      .page-desc{font-size:12px;color:#a09d98;margin-bottom:14px;line-height:1.7}
-      footer{background:#111118;border-top:1px solid rgba(212,168,85,0.1);padding:14px 20px;font-size:10px;color:#6b6864;text-align:center}
-    </style></head>
-    <body>
-      <nav>
-        <div class="logo">Ibiza Mi Vida</div>
-        <div class="nav-links">
-          <span>Club Tickets</span><span>Boat Party</span><span>Formentera</span><span>Contact</span>
-        </div>
-      </nav>
-      <div class="hero">
-        <div class="hero-content">
-          <h1>${hero}</h1>
-          <div class="hero-sub">${sub}</div>
-          <div class="cta-btn">${cta}</div>
-        </div>
-      </div>
-      <div class="content">
-        ${desc ? `<div class="page-desc">${desc}</div>` : ''}
-        ${dealStrip}
-        ${evStrip}
-      </div>
-      <footer>© 2026 Ibiza Mi Vida · ibizamivida.com · ibizamivida.es</footer>
-    </body></html>`;
+  let liveUrl = info.url.replace('ibizamivida.com', 'https://ibiza-mi-vida-website-ywot.vercel.app');
+  
+  if (tab === 'theme' || tab === 'domains') {
+    liveUrl = 'https://ibiza-mi-vida-website-ywot.vercel.app';
+    const labelEl = document.getElementById('preview-section-label');
+    const urlEl = document.getElementById('preview-url-bar');
+    if (labelEl) labelEl.textContent = tab === 'theme' ? 'Vormgeving (Live)' : 'Domeinen (Live)';
+    if (urlEl) urlEl.textContent = 'ibiza-mi-vida-website-ywot.vercel.app';
+  } else {
+    const labelEl = document.getElementById('preview-section-label');
+    const urlEl = document.getElementById('preview-url-bar');
+    if (labelEl) labelEl.textContent = info.label + ' (Live)';
+    if (urlEl) urlEl.textContent = liveUrl;
+  }
 
   const iframe = document.getElementById('webpage-preview');
-  if(iframe) iframe.srcdoc = srcdoc;
+  if(iframe) {
+    iframe.removeAttribute('srcdoc');
+    // Prevent constant reloading on every keystroke by checking if it needs an initial load, 
+    // or if the user clicked the 'Refresh' button manually.
+    if (iframe.src !== liveUrl && !iframe.src.includes(liveUrl)) {
+      iframe.src = liveUrl;
+    } else if (event && event.type === 'click' && event.target.innerText.includes('Refresh')) {
+      // Force reload if refresh button clicked
+      iframe.src = liveUrl;
+    }
+  }
 
   /* Update Instagram preview caption */
   const igCap = document.getElementById('ig-caption-preview');
@@ -4344,6 +4299,65 @@ function togglePreviewDevice(device){
   }
 }
 
+function renderMediaHistory() {
+  const container = document.getElementById('media-history-container');
+  if(!container) return;
+  const history = JSON.parse(localStorage.getItem('media_history') || '[]');
+  if(history.length === 0) {
+    container.innerHTML = '<div style="font-size:0.8rem;color:var(--text3)">Nog geen history beschikbaar.</div>';
+    return;
+  }
+  container.innerHTML = history.map(url => `
+    <div style="flex-shrink:0;width:60px;height:60px;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:pointer" onclick="restoreMedia('${url}')">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover" title="Click to use this media">
+    </div>
+  `).join('');
+}
+
+function addToMediaHistory(url) {
+  let history = JSON.parse(localStorage.getItem('media_history') || '[]');
+  // Avoid duplicates
+  history = history.filter(h => h !== url);
+  history.unshift(url);
+  // Keep last 10
+  if(history.length > 10) history.pop();
+  localStorage.setItem('media_history', JSON.stringify(history));
+  renderMediaHistory();
+}
+
+function restoreMedia(url) {
+  const prev=document.getElementById('hero-preview');
+  if(prev){
+    prev.innerHTML=`<img src="${url}" style="width:100%;border-radius:6px;margin-top:0.5rem;max-height:140px;object-fit:cover">`;
+    prev.dataset.cloudinaryUrl=url;
+  }
+  const logoInput = document.getElementById('theme-logo-url-promoter');
+  if (logoInput) {
+    logoInput.value = url;
+    previewLogo(url);
+  }
+  toast('Media restored from history ✓', 'success');
+  refreshPreview();
+}
+
+function clearMedia(type) {
+  if (type === 'hero') {
+    const prev=document.getElementById('hero-preview');
+    if(prev){
+      prev.innerHTML='';
+      delete prev.dataset.cloudinaryUrl;
+    }
+  } else if (type === 'logo') {
+    const logoInput = document.getElementById('theme-logo-url-promoter');
+    if (logoInput) {
+      logoInput.value = '';
+      previewLogo('');
+    }
+  }
+  toast(type + ' removed', 'info');
+  refreshPreview();
+}
+
 async function handleMediaUpload(input,type){
   const file=input.files[0];
   if(!file)return;
@@ -4360,8 +4374,10 @@ async function handleMediaUpload(input,type){
   };
   reader.readAsDataURL(file);
 
-  const cloudName=localStorage.getItem('cloudinary_cloud')||'daj1lyfgk';
-  const uploadPreset=localStorage.getItem('cloudinary_preset')||'ibizamivida_uploads';
+  const storedCloud = localStorage.getItem('cloudinary_cloud');
+  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
+  const storedPreset = localStorage.getItem('cloudinary_preset');
+  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
 
   if(!cloudName){
     toast('Cloud Name not set under Settings. Showing local preview.','warning');
@@ -4391,6 +4407,8 @@ async function handleMediaUpload(input,type){
     if(url && url.endsWith('.pdf')) {
       url = url.replace('.pdf', '.png');
     }
+    
+    addToMediaHistory(url);
 
     if(type==='hero'){
       const prev=document.getElementById('hero-preview');
@@ -4437,18 +4455,32 @@ function wirePromoterListeners(){
 }
 
 async function testSupabase(){
+  saveSupabaseSettings();
   const el=document.getElementById('supabase-status');
   if(!el) return;
   el.textContent='Testing…';
   try {
-    const {data,error}=await sb.from('featured_events').select('count',{count:'exact',head:true});
+    const customSb = supabase.createClient(
+      localStorage.getItem('supabase_url') || SUPABASE_URL,
+      localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON
+    );
+    const {data,error}=await customSb.from('featured_events').select('count',{count:'exact',head:true});
     if(error)throw error;
     el.innerHTML='<span style="color:var(--success)">● Connected ✓</span>';
-    toast('Supabase connection OK ✓','success');
+    toast('Supabase connection OK & credentials saved ✓','success');
   } catch(e){
     el.innerHTML='<span style="color:var(--danger)">● Failed: '+e.message+'</span>';
     toast('Connection failed: '+e.message,'error');
   }
+}
+
+function saveSupabaseSettings(){
+  const url = document.getElementById('s-url').value.trim();
+  const anon = document.getElementById('s-anon').value.trim();
+  const service = document.getElementById('s-service').value.trim();
+  if(url) localStorage.setItem('supabase_url', url);
+  if(anon) localStorage.setItem('supabase_anon', anon);
+  if(service) localStorage.setItem('supabase_service', service);
 }
 
 function saveCloudinarySettings(){
@@ -4630,11 +4662,12 @@ async function saveThemeSettings(){
       value: newTheme[key]
     }));
     
+    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/site_settings`, {
       method: 'POST',
       headers: {
-        'apikey': SUPABASE_ANON,
-        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'apikey': sbKey,
+        'Authorization': 'Bearer ' + sbKey,
         'Content-Type': 'application/json',
         'Prefer': 'resolution=merge-duplicates'
       },
@@ -4720,6 +4753,7 @@ function loadSettings(){
   if(wa) wa.value=localStorage.getItem('wa_number')||'';
   
   loadThemeSettings();
+  if(typeof renderMediaHistory === 'function') renderMediaHistory();
 }
 
 function saveWhatsApp(){
