@@ -11,10 +11,11 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  --bg: #f8fafc;
+  /* Day Vision (Calm Business Light Mode) */
+  --bg: #f1f5f9;
   --bg2: #ffffff;
-  --bg3: #f1f5f9;
-  --bg4: #e2e8f0;
+  --bg3: #e2e8f0;
+  --bg4: #cbd5e1;
   --gold: #0f172a;
   --gold2: #334155;
   --gold-dim: rgba(15,23,42,0.08);
@@ -29,10 +30,28 @@
   --warn: #f59e0b;
   --sidebar-w: 240px;
   --header-h: 60px;
+  --base-font: 16px;
   font-family: var(--font-family, 'Quicksand', sans-serif);
 }
+
+[data-theme="dark"] {
+  /* Night Vision (Deep Slate Dark Mode) */
+  --bg: #0f172a;
+  --bg2: #1e293b;
+  --bg3: #334155;
+  --bg4: #475569;
+  --gold: #f8fafc;
+  --gold2: #cbd5e1;
+  --gold-dim: rgba(248,250,252,0.1);
+  --text: #f8fafc;
+  --text2: #cbd5e1;
+  --text3: #94a3b8;
+  --border: #334155;
+  --border2: #475569;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); }
+body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); font-size: var(--base-font); transition: background 0.3s, color 0.3s; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
@@ -518,6 +537,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         <button class="lang-btn" onclick="setLang('nl')">NL</button>
         <button class="lang-btn" onclick="setLang('es')">ES</button>
       </div>
+      <button class="header-btn" onclick="toggleTheme()" id="theme-toggle-btn" style="background:transparent;border:1px solid var(--border);color:var(--text);padding:0.4rem 0.8rem;">🌙 Night</button>
       <div class="header-meta" id="conn-status">● Connecting…</div>
       <button class="header-btn" data-i18n="ev.add" onclick="openAddEventModal()">+ Add Event</button>
       <div class="avatar">IMV</div>
@@ -4796,6 +4816,20 @@ function copyEmbedCode(){
   toast('Embed code copied ✓','success');
 }
 
+// ── THEME TOGGLE ──
+function toggleTheme() {
+  const isDark = document.body.getAttribute('data-theme') === 'dark';
+  if (isDark) {
+    document.body.removeAttribute('data-theme');
+    localStorage.setItem('cms_theme', 'light');
+    document.getElementById('theme-toggle-btn').innerText = '🌙 Night';
+  } else {
+    document.body.setAttribute('data-theme', 'dark');
+    localStorage.setItem('cms_theme', 'dark');
+    document.getElementById('theme-toggle-btn').innerText = '☀️ Day';
+  }
+}
+
 // ── INIT ──
 /* ── Hide loader immediately if DOM is ready — belt-and-braces ── */
 function showApp(){
@@ -4809,6 +4843,12 @@ function showApp(){
 document.addEventListener('DOMContentLoaded',()=>setTimeout(showApp,50));
 
 window.addEventListener('load',async()=>{
+  if (localStorage.getItem('cms_theme') === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+    const btn = document.getElementById('theme-toggle-btn');
+    if(btn) btn.innerText = '☀️ Day';
+  }
+  
   loadSettings();
   /* ── Show the app immediately, never block on network ── */
   const hide = () => {
