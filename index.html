@@ -3864,8 +3864,14 @@ function loadDayDeals(){
   `).join('');
 }
 
-function pushDealToWebsite(){ toast('Deal of the Day pushed to website ✓ — all category pages updated', 'success'); }
-function pushDealToInstagram(){ toast('Instagram posts queued for Deal of the Day ✓', 'success'); }
+function pushDealToWebsite(){ 
+  if(!window.confirm("Weet je zeker dat je het wil pushen naar de website? (in alle drie de talen)")) return;
+  toast('Deal of the Day pushed to website ✓ — all category pages updated', 'success'); 
+}
+function pushDealToInstagram(){ 
+  if(!window.confirm("Weet je zeker dat je het wil pushen naar Instagram?")) return;
+  toast('Instagram posts queued for Deal of the Day ✓', 'success'); 
+}
 
 function saveCalendarItem(){
   const key = selectedCalDate || new Date().toISOString().slice(0,10);
@@ -4766,7 +4772,10 @@ function saveWhatsApp(){
   toast('WhatsApp settings saved ✓','success');
 }
 
-function triggerDeploy(){toast('Deploy triggered (configure GitHub token to activate)','info');}
+function triggerDeploy(){
+  if(!window.confirm("Weet je zeker dat je de hele website wil pushen/deployen?")) return;
+  toast('Deploy triggered (configure GitHub token to activate)','info');
+}
 
 function execCmd(cmd){document.execCommand(cmd,false,null);}
 
