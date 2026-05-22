@@ -39,8 +39,11 @@
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 17px; }
-body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); transition: background 0.3s, color 0.3s; }
+html, body {
+  width: 100%;
+  overflow-x: hidden; /* Prevent horizontal wobble on mobile */
+}
+body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; font-size: 0.95rem; line-height: 1.5; font-family: var(--font-family, 'Quicksand', sans-serif); transition: background 0.3s, color 0.3s; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
@@ -386,22 +389,30 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   
   /* Header adjustments */
   #header {
-    padding: 0 1rem;
+    padding: 0.75rem 1rem;
     gap: 0.5rem;
-    min-height: 60px;
+    height: auto;
+    min-height: auto;
+    flex-wrap: wrap;
   }
-  .header-meta {
-    display: none; /* Hide status text on small screens to save space */
-  }
+  .mobile-menu-btn { order: 1; }
+  .header-title { order: 2; flex: 1; }
+  .avatar { order: 3; width: 34px; height: 34px; font-size: 0.85rem; }
+  .lang-switch { order: 4; display: none; /* Hide flags on mobile to save space */ }
+  .header-meta { display: none; }
+  
+  /* Catchy, dominant header buttons on 2nd row */
   .header-btn {
-    font-size: 0.8rem;
-    padding: 0.5rem 0.75rem;
-    min-height: 44px;
-  }
-  .avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.85rem;
+    order: 5;
+    flex: 1 1 45%;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 0.75rem 0.5rem;
+    min-height: 48px;
+    justify-content: center;
+    text-align: center;
+    border-radius: 8px;
+    margin-top: 0.25rem;
   }
   
   /* Stats grid alignment */
