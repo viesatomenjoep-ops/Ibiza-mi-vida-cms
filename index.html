@@ -4297,14 +4297,19 @@ async function autoSaveMedia(type, url) {
       if (!activeTab) return;
       const tabId = activeTab.getAttribute('onclick').split("'")[1];
       
-      const localData = pageContents[tabId] || {};
+      const currentTitle = document.getElementById('page-hero-title').value;
+      const currentSub   = document.getElementById('page-hero-sub').value;
+      const currentDesc  = document.getElementById('page-description').innerHTML;
+      const currentCta   = document.getElementById('page-cta').value;
+      
       const payload = { 
         page_name: tabId, 
-        hero_title: localData.heroTitle || '',
-        hero_sub: localData.heroSub || '',
-        description: localData.desc || '',
-        cta_text: localData.cta || '',
-        hero_img: url 
+        hero_title: currentTitle || '',
+        hero_sub: currentSub || '',
+        description: currentDesc || '',
+        cta_text: currentCta || '',
+        hero_img: url,
+        updated_at: new Date().toISOString()
       };
       
       const { error } = await customSb.from('page_contents').upsert(payload, { onConflict: 'page_name' });
