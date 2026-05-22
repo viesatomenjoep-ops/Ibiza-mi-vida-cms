@@ -44,3 +44,9 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER featured_events_updated_at
   BEFORE UPDATE ON featured_events
   FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+
+-- If table already exists, ensure the new commission and ticket price columns are added
+ALTER TABLE featured_events ADD COLUMN IF NOT EXISTS comm_viesa NUMERIC(5,2) DEFAULT 75;
+ALTER TABLE featured_events ADD COLUMN IF NOT EXISTS comm_simon NUMERIC(5,2) DEFAULT 25;
+ALTER TABLE featured_events ADD COLUMN IF NOT EXISTS ticket_price NUMERIC(10,2);
+
