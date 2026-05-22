@@ -11,46 +11,50 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  /* Day Vision (High-Contrast Minimalist Light Mode) */
-  --bg: #F3F4F6;
+  /* Day Vision (Calm Soft Slate Light Mode) */
+  --bg: #F8FAFC;
   --bg2: #FFFFFF;
-  --bg3: #E5E7EB;
-  --bg4: #D1D5DB;
-  --gold: #111827;      /* Primary Accents: Deep Black/Gray */
-  --gold2: #374151;     /* Primary Hover */
-  --gold-dim: rgba(17,24,39,0.06);
-  --text: #000000;      /* Pure Black text for maximum readability */
-  --text2: #374151;
-  --text3: #6B7280;
-  --border: #D1D5DB;
-  --border2: #9CA3AF;
-  --btn-text: #FFFFFF;  /* White text on black buttons */
-  --accent: #111827;    /* No Blue - replaced with dark slate */
-  --success: #10B981;   /* Keep Green for Success */
-  --danger: #EF4444;    /* Keep Red for Delete/Danger */
-  --warn: #4B5563;      /* No Yellow - replaced with slate */
+  --bg3: #F1F5F9;
+  --bg4: #E2E8F0;
+  --gold: #334155;      /* Slate Gray for accents/buttons (Not black) */
+  --gold2: #475569;     
+  --gold-dim: rgba(51,65,85,0.08);
+  --text: #1E293B;      /* Very dark slate text (Softer than black) */
+  --text2: #475569;
+  --text3: #64748B;
+  --border: #E2E8F0;
+  --border2: #CBD5E1;
+  --btn-text: #F8FAFC;  /* Soft white text on slate buttons */
+  --accent: #475569;    
+  --success: #10B981;   
+  --danger: #EF4444;    
+  --warn: #64748B;      
   --sidebar-w: 240px;
   --header-h: 60px;
   font-family: var(--font-family, 'Quicksand', sans-serif);
 }
 
 [data-theme="dark"] {
-  /* Night Vision (Deep Zinc Minimalist Dark Mode) */
-  --bg: #09090B;
-  --bg2: #18181B;
-  --bg3: #27272A;
-  --bg4: #3F3F46;
-  --gold: #FFFFFF;      /* Primary Accents: Pure White */
-  --gold2: #E4E4E7;     /* Primary Hover */
-  --gold-dim: rgba(255,255,255,0.1);
-  --text: #FFFFFF;      /* Pure White text for maximum readability */
-  --text2: #A1A1AA;
-  --text3: #71717A;
-  --border: #27272A;
-  --border2: #3F3F46;
-  --btn-text: #000000;  /* Black text on white buttons */
-  --accent: #FFFFFF;    /* No Blue - replaced with white */
-  --warn: #71717A;      /* No Yellow - replaced with gray */
+  /* Night Vision (Calm Soft Slate Dark Mode) */
+  --bg: #0F172A;        /* Deep Slate (Not pitch black) */
+  --bg2: #1E293B;       /* Lighter slate for panels */
+  --bg3: #334155;
+  --bg4: #475569;
+  --gold: #CBD5E1;      /* Soft light gray accents (Not pure white) */
+  --gold2: #E2E8F0;
+  --gold-dim: rgba(203,213,225,0.1);
+  --text: #E2E8F0;      /* Soft off-white/gray text for reading comfort */
+  --text2: #94A3B8;
+  --text3: #64748B;
+  --border: #334155;
+  --border2: #475569;
+  --btn-text: #0F172A;  /* Dark slate text on light gray buttons */
+  --accent: #94A3B8;
+  --warn: #64748B;
+}
+
+[data-theme="dark"] .brand-logo-img {
+  filter: brightness(0) invert(1);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
