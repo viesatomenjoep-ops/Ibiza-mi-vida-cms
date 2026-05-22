@@ -11,44 +11,46 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  /* Day Vision (Premium Light Mode - Soft & Calm) */
+  /* Day Vision (High-Contrast Minimalist Light Mode) */
   --bg: #F3F4F6;
   --bg2: #FFFFFF;
   --bg3: #E5E7EB;
   --bg4: #D1D5DB;
-  --gold: #0F172A;
-  --gold2: #334155;
-  --gold-dim: rgba(15,23,42,0.06);
-  --text: #1F2937;
-  --text2: #4B5563;
+  --gold: #111827;      /* Primary Accents: Deep Black/Gray */
+  --gold2: #374151;     /* Primary Hover */
+  --gold-dim: rgba(17,24,39,0.06);
+  --text: #000000;      /* Pure Black text for maximum readability */
+  --text2: #374151;
   --text3: #6B7280;
-  --border: #E5E7EB;
-  --border2: #D1D5DB;
-  --btn-text: #FFFFFF;
-  --accent: #3B82F6;
-  --success: #10B981;
-  --danger: #EF4444;
-  --warn: #F59E0B;
+  --border: #D1D5DB;
+  --border2: #9CA3AF;
+  --btn-text: #FFFFFF;  /* White text on black buttons */
+  --accent: #111827;    /* No Blue - replaced with dark slate */
+  --success: #10B981;   /* Keep Green for Success */
+  --danger: #EF4444;    /* Keep Red for Delete/Danger */
+  --warn: #4B5563;      /* No Yellow - replaced with slate */
   --sidebar-w: 240px;
   --header-h: 60px;
   font-family: var(--font-family, 'Quicksand', sans-serif);
 }
 
 [data-theme="dark"] {
-  /* Night Vision (Premium Dark Mode - Soft Dark) */
-  --bg: #111827;
-  --bg2: #1F2937;
-  --bg3: #374151;
-  --bg4: #4B5563;
-  --gold: #F9FAFB;
-  --gold2: #E5E7EB;
-  --gold-dim: rgba(249,250,251,0.08);
-  --text: #F3F4F6;
-  --text2: #D1D5DB;
-  --text3: #9CA3AF;
-  --border: #374151;
-  --border2: #4B5563;
-  --btn-text: #111827;
+  /* Night Vision (Deep Zinc Minimalist Dark Mode) */
+  --bg: #09090B;
+  --bg2: #18181B;
+  --bg3: #27272A;
+  --bg4: #3F3F46;
+  --gold: #FFFFFF;      /* Primary Accents: Pure White */
+  --gold2: #E4E4E7;     /* Primary Hover */
+  --gold-dim: rgba(255,255,255,0.1);
+  --text: #FFFFFF;      /* Pure White text for maximum readability */
+  --text2: #A1A1AA;
+  --text3: #71717A;
+  --border: #27272A;
+  --border2: #3F3F46;
+  --btn-text: #000000;  /* Black text on white buttons */
+  --accent: #FFFFFF;    /* No Blue - replaced with white */
+  --warn: #71717A;      /* No Yellow - replaced with gray */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
