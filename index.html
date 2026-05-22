@@ -4264,12 +4264,27 @@ async function autoSaveMedia(type, url) {
       const activeTab = document.querySelector('.prom-tab.active');
       if (!activeTab) return;
       const tabId = activeTab.getAttribute('onclick').split("'")[1];
-      const payload = { ...pageContents[tabId], page_name: tabId, hero_image: url };
-      await customSb.from('page_contents').upsert(payload, { onConflict: 'page_name' });
-      pageContents[tabId] = payload;
+      
+      const localData = pageContents[tabId] || {};
+      const payload = { 
+        page_name: tabId, 
+        hero_title: localData.heroTitle || '',
+        hero_sub: localData.heroSub || '',
+        description: localData.desc || '',
+        cta_text: localData.cta || '',
+        hero_img: url 
+      };
+      
+      const { error } = await customSb.from('page_contents').upsert(payload, { onConflict: 'page_name' });
+      if (error) throw error;
+      
+      if (!pageContents[tabId]) pageContents[tabId] = {};
+      pageContents[tabId].heroImg = url;
       toast('Hero banner direct opgeslagen & gepubliceerd! 🚀', 'success');
     } else if (type === 'logo') {
-      await customSb.from('site_settings').upsert({ key: 'logo_url', value: url }, { onConflict: 'key' });
+      const { error } = await customSb.from('site_settings').upsert({ key: 'logo_url', value: url }, { onConflict: 'key' });
+      if (error) throw error;
+      
       if (currentThemeSettings) currentThemeSettings.logo_url = url;
       toast('Logo direct opgeslagen & gepubliceerd! 🎨', 'success');
     }
@@ -4277,6 +4292,7 @@ async function autoSaveMedia(type, url) {
     triggerDeploy();
   } catch (e) {
     console.error('Auto-save error:', e);
+    toast('Auto-save database error: ' + e.message, 'error');
   }
 }
 
