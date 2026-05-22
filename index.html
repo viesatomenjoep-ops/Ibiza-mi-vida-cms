@@ -679,7 +679,6 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                   <th>Earn / ticket</th>
                   <th>Badge</th>
                   <th>Status</th>
-                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody id="events-tbody">
@@ -1996,6 +1995,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 <script>
 const SUPABASE_URL = 'https://qqstpsvalgdbjacdkmmk.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxc3Rwc3ZhbGdkYmphY2RrbW1rIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0NTcwMjksImV4cCI6MjA5NTAzMzAyOX0.l1vn7EelXnVRXVR0CJg0N4LsQi52TPeNuZYSBsRVB38';
+const SUPABASE_SERVICE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFxc3Rwc3ZhbGdkYmphY2RrbW1rIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTQ1NzAyOSwiZXhwIjoyMDk1MDMzMDI5fQ.2MYBkI-f3hFclKb7LXpDgE_JyOMF2Y_h8XQqcrUsE4o';
 
 let sb, allEvents=[], allCustomers=[], allLeads=[], allSales=[], allReviews=[], allClubs=[], calendarItems={};
 let currentLang='en', calYear=2026, calMonth=6;
@@ -2696,7 +2696,13 @@ function renderEventsTable(events){
     const earnStr=tp?`<span style="color:var(--gold)">€${vEarn.toFixed(0)}</span><span style="color:var(--text3)"> / </span><span style="color:var(--accent)">€${sEarn.toFixed(0)}</span>`:'—';
     return `<tr>
       <td><img class="img-preview" src="${e.image_url||''}" onerror="this.style.display='none'" alt=""></td>
-      <td style="color:var(--text);font-weight:500;max-width:160px">${e.title}</td>
+      <td style="color:var(--text);max-width:180px">
+        <div style="font-weight:600;margin-bottom:8px">${e.title}</div>
+        <div style="display:flex;gap:4px">
+          <button class="btn btn-secondary btn-sm" onclick='editEvent(${JSON.stringify(e)})' style="padding:0.2rem 0.5rem;font-size:0.68rem">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')" style="padding:0.2rem 0.5rem;font-size:0.68rem">Del</button>
+        </div>
+      </td>
       <td>${cats[e.category]||e.category}</td>
       <td>${e.venue_name||'—'}</td>
       <td>${e.event_date?new Date(e.event_date).toLocaleDateString('nl-BE'):'—'}</td>
@@ -2706,12 +2712,6 @@ function renderEventsTable(events){
       <td style="font-size:0.78rem">${earnStr}</td>
       <td>${e.badge_text?`<span class="badge badge-gold">${e.badge_text}</span>`:'—'}</td>
       <td><span class="badge ${e.active?'badge-success':'badge-danger'}">${e.active?'Active':'Inactive'}</span></td>
-      <td>
-        <div style="display:flex;gap:4px">
-          <button class="btn btn-secondary btn-sm" onclick='editEvent(${JSON.stringify(e)})'>Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">Del</button>
-        </div>
-      </td>
     </tr>`;
   }).join('');
   document.getElementById('events-count').textContent=events.length;
@@ -4236,7 +4236,7 @@ async function savePageContent(){
 
   try {
     toast("Paginatekst opslaan...", "info");
-    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
+    const sbKey = localStorage.getItem('supabase_service') || SUPABASE_SERVICE;
     const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
     const customSb = supabase.createClient(activeUrl, sbKey);
     
@@ -4487,7 +4487,7 @@ async function testSupabase(){
   try {
     const customSb = supabase.createClient(
       localStorage.getItem('supabase_url') || SUPABASE_URL,
-      localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON
+      localStorage.getItem('supabase_service') || SUPABASE_SERVICE
     );
     const {data,error}=await customSb.from('featured_events').select('count',{count:'exact',head:true});
     if(error)throw error;
@@ -4690,7 +4690,7 @@ async function saveThemeSettings(){
     }));
     
     const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
-    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
+    const sbKey = localStorage.getItem('supabase_service') || SUPABASE_SERVICE;
     const customSb = supabase.createClient(activeUrl, sbKey);
     
     const { error } = await customSb.from('site_settings').upsert(payload, { onConflict: 'key' });
@@ -4851,7 +4851,7 @@ window.addEventListener('load',async()=>{
   try {
     /* Try to create Supabase client — if the lib didn't load, catch it */
     if(typeof supabase === 'undefined') throw new Error('Supabase library not loaded');
-    sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
 
     /* Show app right away — don't wait for DB */
     hide();
