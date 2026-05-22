@@ -3494,9 +3494,17 @@ function openCalDay(key, d){
             <button class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:0.65rem;color:var(--accent);border-color:rgba(91,140,255,0.3);height:26px" onclick="quickScheduleDropdown('${key}','${s.key}','instagram')">IG</button>
             <button class="btn btn-secondary btn-sm" style="padding:2px 6px;font-size:0.65rem;color:var(--success);border-color:rgba(62,207,142,0.3);height:26px" onclick="quickScheduleDropdown('${key}','${s.key}','tiktok')">TT</button>
           </div>
+          <div style="display:flex;gap:0.25rem;margin-top:0.35rem">
+            <button class="btn btn-secondary btn-sm" style="flex:1;font-size:0.65rem;height:24px;border-style:dashed" onclick="scheduleManualSocialEvent('${key}','${s.key}')">
+              ✍ Custom Social Promo / Manual
+            </button>
+          </div>
         </div>
         
-        <button class="btn btn-secondary btn-sm" style="width:100%;margin-top:0.6rem;font-size:0.7rem" onclick="addToDeal('${key}','${s.key}')">+ Add to Deal of the Day</button>
+        <div style="display:flex;gap:0.4rem;margin-top:0.6rem">
+          <button class="btn btn-secondary btn-sm" style="flex:1;font-size:0.7rem;padding:2px 4px" onclick="addToDeal('${key}','${s.key}')">+ Deal of the Day</button>
+          <button class="btn btn-primary btn-sm" style="flex:1;font-size:0.7rem;padding:2px 4px" onclick="createEventOnDate('${key}','${s.key}')">+ Add DB Event</button>
+        </div>
       </div>
     `;
   }).join('');
@@ -3525,6 +3533,35 @@ function quickScheduleDropdown(dateKey, catKey, channel){
   }
   quickSchedule(dateKey, evId, channel);
   sel.value = ''; // Reset selection
+}
+
+function scheduleManualSocialEvent(dateKey, catKey){
+  const title = prompt("Enter manual/custom promotion title:");
+  if(!title || !title.trim()) return;
+  const channel = prompt("Enter channel to schedule to (web / ig / tt):", "web");
+  if(!channel) return;
+  
+  let mappedChannel = 'website';
+  const cLower = channel.toLowerCase().trim();
+  if(cLower==='ig' || cLower==='instagram') mappedChannel = 'instagram';
+  if(cLower==='tt' || cLower==='tiktok') mappedChannel = 'tiktok';
+  
+  if(!calendarItems[dateKey]) calendarItems[dateKey] = [];
+  calendarItems[dateKey].push({
+    type: mappedChannel,
+    evId: 'custom_' + Date.now(),
+    title: title.trim(),
+    notes: 'Manually added'
+  });
+  renderCalendar();
+  renderDayPromos(dateKey);
+  toast(`Custom promo scheduled to ${mappedChannel} ✓`, 'success');
+}
+
+function createEventOnDate(dateKey, catKey){
+  openAddEventModal();
+  document.getElementById('ev-date').value = dateKey;
+  document.getElementById('ev-category').value = catKey;
 }
 
 function renderDayPromos(key){
