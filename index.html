@@ -819,7 +819,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                   <div>Click to upload image (4K supported)</div>
                   <div style="font-size:0.7rem;margin-top:4px;color:var(--text3)">JPG, PNG, WebP, MP4 · Max 50MB</div>
                 </div>
-                <input type="file" id="hero-img-upload" accept="image/*,video/*" style="display:none" onchange="handleMediaUpload(this,'hero')">
+                <input type="file" id="hero-img-upload" accept="image/*,video/*,.pdf" style="display:none" onchange="handleMediaUpload(this,'hero')">
                 <div id="hero-preview"></div>
               </div>
               <div class="form-group" style="margin-bottom:1rem">
@@ -828,7 +828,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                   <div style="margin-top:0.4rem">Upload Logo (SVG / PNG)</div>
                 </div>
-                <input type="file" id="logo-upload" accept="image/*,.svg" style="display:none" onchange="handleMediaUpload(this,'logo')">
+                <input type="file" id="logo-upload" accept="image/*,.svg,.pdf" style="display:none" onchange="handleMediaUpload(this,'logo')">
               </div>
               <div class="form-group">
                 <label>Extract from PDF</label>
@@ -2845,7 +2845,6 @@ async function saveEvent(){
     description:document.getElementById('ev-description').value||null,
     sort_order:parseInt(document.getElementById('ev-sort').value)||0,
     active:document.getElementById('ev-active').checked,
-    comm_rate:commRate,
     comm_viesa:commViesa,
     comm_simon:commSimon,
     ticket_price:ticketPrice,
@@ -4026,12 +4025,18 @@ function importExcel(input){
       let imported=0;
       rows.forEach(row=>{
         if(!row.title&&!row.Title)return;
+        
+        let venue = row.venue_name||row.Venue||null;
+        if(venue && (venue.toUpperCase() === '[UNVRS]' || venue.toUpperCase() === 'UNVRS' || venue.toUpperCase() === 'UNRVS')){
+          venue = 'Universe';
+        }
+
         const ev={
           id:'import-'+Date.now()+'-'+imported,
           title:row.title||row.Title||'',
           subtitle:row.subtitle||row.Subtitle||'',
           category:(row.category||row.Category||'club-ticket').toLowerCase().replace(' ','-'),
-          venue_name:row.venue_name||row.Venue||null,
+          venue_name:venue,
           event_date:row.event_date||row.Date||null,
           price_from:parseFloat(row.price_from||row.Price)||null,
           badge_text:row.badge_text||row.Badge||null,
@@ -4132,6 +4137,17 @@ function setPromoterTab(tab){
   document.getElementById('page-description').innerHTML = stored.desc || '';
   document.getElementById('page-cta').value         = stored.cta      || 'Book Now';
 
+  const heroPrev = document.getElementById('hero-preview');
+  if (heroPrev) {
+    if (stored.heroImg) {
+      heroPrev.innerHTML = `<img src="${stored.heroImg}" style="width:100%;border-radius:6px;margin-top:0.5rem;max-height:140px;object-fit:cover">`;
+      heroPrev.dataset.cloudinaryUrl = stored.heroImg;
+    } else {
+      heroPrev.innerHTML = '';
+      delete heroPrev.dataset.cloudinaryUrl;
+    }
+  }
+
   document.getElementById('preview-section-label').textContent = info.label;
   document.getElementById('preview-url-bar').textContent = info.url;
 
@@ -4155,12 +4171,21 @@ async function savePageContent(){
   const desc      = document.getElementById('page-description').innerHTML;
   const cta       = document.getElementById('page-cta').value;
   
+  const heroPrev = document.getElementById('hero-preview');
+  let heroImg = '';
+  if (heroPrev && heroPrev.dataset.cloudinaryUrl) {
+    heroImg = heroPrev.dataset.cloudinaryUrl;
+  } else if (heroPrev && heroPrev.querySelector('img')) {
+    heroImg = heroPrev.querySelector('img').src;
+  }
+  
   const payload = {
     page_name: tab,
     hero_title: heroTitle,
     hero_sub: heroSub,
     description: desc,
     cta_text: cta,
+    hero_img: heroImg,
     updated_at: new Date().toISOString()
   };
 
@@ -4183,7 +4208,8 @@ async function savePageContent(){
       heroTitle: heroTitle,
       heroSub: heroSub,
       desc: desc,
-      cta: cta
+      cta: cta,
+      heroImg: heroImg
     };
     
     refreshPreview();
@@ -4194,7 +4220,8 @@ async function savePageContent(){
       heroTitle: heroTitle,
       heroSub: heroSub,
       desc: desc,
-      cta: cta
+      cta: cta,
+      heroImg: heroImg
     };
     refreshPreview();
     toast('Lokaal opgeslagen! (Kon niet direct verbinden met database)', 'warning');
@@ -4360,7 +4387,10 @@ async function handleMediaUpload(input,type){
     }
 
     const data=await response.json();
-    const url=data.secure_url;
+    let url=data.secure_url;
+    if(url && url.endsWith('.pdf')) {
+      url = url.replace('.pdf', '.png');
+    }
 
     if(type==='hero'){
       const prev=document.getElementById('hero-preview');
@@ -4375,6 +4405,12 @@ async function handleMediaUpload(input,type){
       if(uploadBox){
         uploadBox.innerHTML=`<img src="${url}" style="max-height:60px;object-fit:contain"><div style="margin-top:0.4rem;font-size:0.7rem;color:var(--success)">Uploaded ✓</div>`;
         uploadBox.dataset.cloudinaryUrl=url;
+      }
+      // Populate the customizer text input if it exists
+      const logoInput = document.getElementById('theme-logo-url-promoter');
+      if (logoInput) {
+        logoInput.value = url;
+        previewLogo(url);
       }
     } else if(type==='event'){
       const imgInput=document.getElementById('ev-image');
