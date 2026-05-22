@@ -1840,7 +1840,29 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('deal-modal')">Cancel</button>
       <button class="btn btn-secondary" onclick="pushDealToInstagram()">Push to Instagram</button>
-      <button class="btn btn-primary" onclick="saveDealOfDay()">Save & Push to Website</button>
+      <button class="btn btn-primary" onclick="previewDealOfDay()">Preview Deals & Push 🚀</button>
+    </div>
+  </div>
+</div>
+
+<!-- Deal of the Day Preview/Viewer Modal -->
+<div class="modal-backdrop" id="deal-viewer-modal">
+  <div class="modal" style="max-width:840px">
+    <div class="modal-header">
+      <div class="modal-title">Deal of the Day Preview — <span id="deal-viewer-date" style="color:var(--gold)">—</span></div>
+      <button class="modal-close" onclick="closeModal('deal-viewer-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:0.85rem;color:var(--text3);margin-bottom:1.25rem">
+        This is a preview of the Deals of the Day that will be published. Please review what is scheduled to be pushed per category.
+      </div>
+      
+      <!-- Preview Grid -->
+      <div id="deal-viewer-grid" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:0.75rem;margin-bottom:1rem"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="backToEditDeals()">← Back to Edit</button>
+      <button class="btn btn-primary" style="background:var(--gold);color:var(--bg)" onclick="confirmPushDeals()">Push to Website (All 3 Languages) 🚀</button>
     </div>
   </div>
 </div>
@@ -3644,23 +3666,79 @@ function filterDealEvents(q){
   });
 }
 
-function saveDealOfDay(){
+let temporaryDeals = null;
+
+function previewDealOfDay(){
   const key = selectedCalDate || new Date().toISOString().slice(0,10);
-  if(!dealOfDay[key]) dealOfDay[key] = {};
+  document.getElementById('deal-viewer-date').textContent = key;
+  
+  temporaryDeals = {};
   SECTION_COMMISSIONS.forEach(s => {
     const checked = document.querySelectorAll(`input[type=checkbox][data-cat="${s.key}"]:checked`);
-    dealOfDay[key][s.key] = [];
+    temporaryDeals[s.key] = [];
     checked.forEach(cb => {
       const ev = allEvents.find(e => e.id === cb.dataset.evid);
-      if(ev) dealOfDay[key][s.key].push({evId: ev.id, title: ev.title, price: ev.price_from, img: ev.image_url});
+      if(ev) temporaryDeals[s.key].push({evId: ev.id, title: ev.title, price: ev.price_from, img: ev.image_url});
     });
     const promoEl = document.getElementById('deal-promo-'+s.key);
-    if(promoEl) dealOfDay[key][s.key+'_promo'] = promoEl.value;
+    if(promoEl) temporaryDeals[s.key+'_promo'] = promoEl.value;
   });
+
+  const grid = document.getElementById('deal-viewer-grid');
+  grid.innerHTML = SECTION_COMMISSIONS.map(s => {
+    const deals = temporaryDeals[s.key] || [];
+    const promo = temporaryDeals[s.key+'_promo'] || '';
+    const hasDeals = deals.length > 0;
+    
+    return `
+      <div style="background:var(--bg3);border:1px solid ${hasDeals?'var(--gold)':'var(--border)'};border-radius:10px;padding:0.875rem;display:flex;flex-direction:column;gap:0.5rem">
+        <div style="display:flex;align-items:center;gap:0.4rem;font-weight:600;font-size:0.8rem;color:${hasDeals?'var(--gold)':'var(--text3)'}">
+          <span>${s.icon}</span>
+          <span>${s.section}</span>
+          ${hasDeals ? `<span class="badge badge-gold" style="font-size:0.6rem;margin-left:auto">${deals.length} deals</span>` : ''}
+        </div>
+        
+        <div style="flex:1">
+          ${hasDeals ? `
+            <div style="display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.4rem">
+              ${deals.map(d => `
+                <div style="display:flex;align-items:center;gap:0.4rem;font-size:0.72rem;color:var(--text2)">
+                  ${d.img ? `<img src="${d.img}" style="width:28px;height:22px;object-fit:cover;border-radius:4px">` : ''}
+                  <span style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.title}</span>
+                  <span style="color:var(--gold);font-weight:600">€${d.price||'?'}</span>
+                </div>
+              `).join('')}
+            </div>
+            ${promo ? `<div style="font-size:0.68rem;color:var(--text3);font-style:italic;background:var(--bg4);padding:4px 6px;border-radius:4px">"${promo}"</div>` : ''}
+          ` : `
+            <div style="font-size:0.7rem;color:var(--text3);font-style:italic">No deals selected.</div>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+
   closeModal('deal-modal');
+  showModal('deal-viewer-modal');
+}
+
+function backToEditDeals(){
+  closeModal('deal-viewer-modal');
+  showModal('deal-modal');
+}
+
+function confirmPushDeals(){
+  if(!confirm("Weet je zeker dat je het naar de website wilt pushten in alle drie de talen?")) {
+    return;
+  }
+  
+  const key = selectedCalDate || new Date().toISOString().slice(0,10);
+  dealOfDay[key] = temporaryDeals;
+  
+  closeModal('deal-viewer-modal');
   renderCalendar();
   if(selectedCalDate) openCalDay(selectedCalDate, new Date(selectedCalDate+'T12:00:00'));
-  toast('Deal of the Day saved & pushed to website ✓', 'success');
+  toast('Deal of the Day successfully pushed to website in all 3 languages! 🚀', 'success');
   loadDayDeals();
 }
 
