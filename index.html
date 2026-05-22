@@ -869,7 +869,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 <label>CTA Button Text</label>
                 <input type="text" value="Explore Events" id="page-cta">
               </div>
-              <div class="action-bar-mobile" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem">
+              <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem">
                 <button class="btn btn-primary" onclick="savePageContent()" data-i18n="prom.save">Save to Supabase</button>
                 <button class="btn btn-secondary" onclick="previewPage()" data-i18n="prom.preview">Preview</button>
               </div>
@@ -913,6 +913,12 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                   <div style="margin-top:0.4rem">Upload PDF — extract images + text</div>
                 </div>
                 <input type="file" id="pdf-upload" accept=".pdf" style="display:none" onchange="extractPDF(this)">
+              </div>
+              
+              <!-- Bottom Action Bar (Fixed on mobile) -->
+              <div class="action-bar-mobile" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)">
+                <button class="btn btn-primary" onclick="savePageContent()" style="flex:1" data-i18n="prom.save">Save to Supabase</button>
+                <button class="btn btn-secondary" onclick="previewPage()" data-i18n="prom.preview">Preview</button>
               </div>
             </div>
           </div>
