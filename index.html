@@ -2679,6 +2679,7 @@ document.querySelectorAll('.nav-item[data-page]').forEach(n=>{
 
 
 async function loadAllData(){
+  await loadPageContents();
   await loadEvents();
   loadClubsGrid();
   buildCommissionTable();
@@ -4200,6 +4201,34 @@ const PROMOTER_PAGES = {
 
 /* Page content store */
 const pageContents = {};
+
+async function loadPageContents() {
+  try {
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const { data, error } = await customSb.from('page_contents').select('*');
+    if (error) throw error;
+    
+    if (data && data.length > 0) {
+      data.forEach(row => {
+        pageContents[row.page_name] = {
+          heroTitle: row.hero_title || '',
+          heroSub: row.hero_sub || '',
+          desc: row.description || '',
+          cta: row.cta_text || '',
+          heroImg: row.hero_img || ''
+        };
+      });
+      // Update the active tab visually if we are on the promoter page
+      if (document.getElementById('p-promoter').classList.contains('active')) {
+        setPromoterTab(currentPromoterTab);
+      }
+    }
+  } catch (e) {
+    console.warn("Failed to load page contents from Supabase:", e);
+  }
+}
 
 function setPromoterTab(tab){
   currentPromoterTab = tab;
