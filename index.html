@@ -2984,8 +2984,10 @@ async function handleSocialMediaUpload(input){
   };
   reader.readAsDataURL(file);
 
-  const cloudName=localStorage.getItem('cloudinary_cloud')||'daj1lyfgk';
-  const uploadPreset=localStorage.getItem('cloudinary_preset')||'ibizamivida_uploads';
+  const storedCloud = localStorage.getItem('cloudinary_cloud');
+  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
+  const storedPreset = localStorage.getItem('cloudinary_preset');
+  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
 
   toast('Uploading media to Cloudinary...','info');
 
@@ -3030,8 +3032,10 @@ async function handleSocialMediaUpload(input){
 async function handleClubLogoUpload(input){
   const file=input.files[0];
   if(!file)return;
-  const cloudName=localStorage.getItem('cloudinary_cloud')||'daj1lyfgk';
-  const uploadPreset=localStorage.getItem('cloudinary_preset')||'ibizamivida_uploads';
+  const storedCloud = localStorage.getItem('cloudinary_cloud');
+  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
+  const storedPreset = localStorage.getItem('cloudinary_preset');
+  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
 
   toast('Uploading logo to Cloudinary...','info');
 
