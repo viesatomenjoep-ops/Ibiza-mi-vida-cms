@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Ibiza Mi Vida — CMS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -211,11 +211,182 @@ textarea { resize: vertical; min-height: 80px; }
 /* ── WHATSAPP LEADS ── */
 .lead-card { background: var(--bg4); border: 1px solid var(--border); border-radius: 8px; padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; }
 
+/* ── MOBILE MENU BUTTON ── */
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+.mobile-menu-btn:active {
+  background: var(--bg4);
+}
+.mobile-menu-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ── SIDEBAR BACKDROP ── */
+#sidebar-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  backdrop-filter: blur(4px);
+}
+#sidebar-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Global Touch Action Optimization */
+button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
+  touch-action: manipulation;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
-  #sidebar { display: none; }
-  .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
-  .form-group.span2, .form-group.span3 { grid-column: auto; }
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  #sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    width: 260px;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex !important;
+  }
+  #sidebar.open {
+    transform: translateX(0);
+  }
+  
+  #content {
+    padding: 1rem;
+  }
+  
+  /* Make page headers more compact on mobile */
+  .page-header {
+    margin-bottom: 1rem;
+  }
+  .page-title {
+    font-size: 1.3rem;
+  }
+  .page-sub {
+    font-size: 0.75rem;
+  }
+  
+  /* Prevent horizontal layout shifting and lock page movement */
+  #app {
+    height: 100dvh;
+    overflow: hidden;
+  }
+  body {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  /* Form elements and select options touch targets */
+  input, select, textarea {
+    font-size: 16px !important; /* Locks browser auto-zoom on focus */
+    min-height: 46px; /* High-precision tap target */
+    padding: 0.65rem 0.875rem;
+  }
+  
+  .btn, .nav-item, .tab {
+    min-height: 44px; /* Large tap targets */
+  }
+  
+  .form-grid, .form-grid-3 {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .form-group.span2, .form-group.span3 {
+    grid-column: auto;
+  }
+  
+  /* Tables wrapper for smooth horizontal scroll */
+  .table-wrap {
+    margin: 0 -1rem;
+    padding: 0 1rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Header adjustments */
+  #header {
+    padding: 0 1rem;
+    gap: 0.5rem;
+  }
+  .header-meta {
+    display: none; /* Hide status text on small screens to save space */
+  }
+  .header-btn {
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+    min-height: 36px;
+  }
+  .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+  }
+  
+  /* Stats grid alignment */
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .stat-card {
+    padding: 0.75rem;
+  }
+  .stat-value {
+    font-size: 1.25rem;
+  }
+  
+  /* Modal responsiveness */
+  .modal {
+    width: 95%;
+    max-height: 85vh;
+  }
+  .modal-header, .modal-body, .modal-footer {
+    padding: 1rem;
+  }
+  
+  /* Disable hover effects that look weird on tap */
+  .nav-item:hover, .btn:hover, .tab:hover {
+    background: inherit;
+    color: inherit;
+  }
+  .nav-item:active, .btn:active, .tab:active {
+    background: var(--bg3);
+  }
+  .nav-item.active {
+    color: var(--gold);
+    background: var(--gold-dim);
+  }
 }
 
 /* ── GRAVITY STOCKS ── */
@@ -240,6 +411,7 @@ textarea { resize: vertical; min-height: 80px; }
   <div class="spinner"></div>
 </div>
 
+<div id="sidebar-backdrop" onclick="closeMobileMenu()"></div>
 <div id="app" style="display:none">
   <!-- SIDEBAR -->
   <nav id="sidebar">
@@ -326,6 +498,9 @@ textarea { resize: vertical; min-height: 80px; }
   <!-- MAIN -->
   <div id="main">
     <div id="header">
+      <button id="mobile-menu-btn" class="mobile-menu-btn" onclick="toggleMobileMenu(event)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
       <div class="header-title" id="header-title">Dashboard</div>
       <div class="lang-switch">
         <button class="lang-btn active" onclick="setLang('en')">EN</button>
@@ -2245,6 +2420,7 @@ function navigate(page){
   const nav=document.querySelector(`.nav-item[data-page="${page}"]`);
   if(nav)nav.classList.add('active');
   document.getElementById('header-title').textContent=tr('nav.'+page);
+  closeMobileMenu();
 }
 
 document.querySelectorAll('.nav-item[data-page]').forEach(n=>{
@@ -3710,6 +3886,25 @@ window.addEventListener('load',async()=>{
     loadDemoData();
   }
 });
+
+function toggleMobileMenu(e) {
+  if (e) e.stopPropagation();
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar && backdrop) {
+    sidebar.classList.toggle('open');
+    backdrop.classList.toggle('open');
+  }
+}
+
+function closeMobileMenu() {
+  const sidebar = document.getElementById('sidebar');
+  const backdrop = document.getElementById('sidebar-backdrop');
+  if (sidebar && backdrop) {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
+  }
+}
 </script>
 </body>
 </html>
