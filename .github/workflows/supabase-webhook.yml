@@ -1,0 +1,47 @@
+# ============================================================
+#  Ibiza Mi Vida — Supabase → GitHub Deploy Webhook
+#
+#  When content changes in Supabase (events, clubs, etc.)
+#  this workflow re-deploys the CMS automatically.
+#
+#  Setup in Supabase:
+#    Dashboard → Database → Webhooks → Create webhook
+#    URL: https://api.github.com/repos/OWNER/REPO/dispatches
+#    Method: POST
+#    Headers:
+#      Authorization: Bearer YOUR_GITHUB_TOKEN
+#      Content-Type: application/json
+#    Body: {"event_type": "supabase-content-update"}
+# ============================================================
+
+name: Supabase Content Update Deploy
+
+on:
+  repository_dispatch:
+    types: [supabase-content-update]
+  schedule:
+    # Also run nightly at 03:00 CET to catch any missed webhooks
+    - cron: "0 2 * * *"
+
+jobs:
+  redeploy:
+    name: Redeploy on content change
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log trigger
+        run: |
+          echo "Triggered by: ${{ github.event_name }}"
+          echo "Event type:   ${{ github.event.action }}"
+          echo "Time:         $(date -u)"
+
+      - name: Trigger main deploy workflow
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner:   context.repo.owner,
+              repo:    context.repo.repo,
+              workflow_id: 'deploy.yml',
+              ref:     'main',
+            });
+            console.log('✅ Deploy workflow triggered');

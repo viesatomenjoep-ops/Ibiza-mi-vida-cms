@@ -1,0 +1,26 @@
+# ── Secrets — NEVER commit these ──────────────────────────
+.env
+.env.local
+.env.production
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# ── OS / Editor ───────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ── Docker ────────────────────────────────────────────────
+.docker/
+
+# ── Node (if added later) ─────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Build outputs ─────────────────────────────────────────
+dist/
+build/
+.next/
