@@ -15,7 +15,7 @@ RUN apk add --no-cache curl && rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy CMS file
-COPY ibiza-cms.html /usr/share/nginx/html/index.html
+COPY index.html /usr/share/nginx/html/index.html
 
 # Copy any static assets if present
 COPY assets/ /usr/share/nginx/html/assets/ 2>/dev/null || true
