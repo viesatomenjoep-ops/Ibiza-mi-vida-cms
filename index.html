@@ -29,17 +29,17 @@
   --warn: #f0a830;
   --sidebar-w: 240px;
   --header-h: 60px;
-  font-family: 'Quicksand', sans-serif;
+  font-family: var(--font-family, 'Quicksand', sans-serif);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
 /* ── LOADING ── */
 #loading { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 9999; gap: 1.5rem; transition: opacity 0.4s; }
-#loading .logo-load { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 2.8rem; color: var(--gold); letter-spacing: 0.03em; }
+#loading .logo-load { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 2.8rem; color: var(--gold); letter-spacing: 0.03em; }
 #loading .sub-load { font-size: 0.8rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text3); }
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -53,7 +53,7 @@ body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x:
 
 /* ── SIDEBAR ── */
 .sidebar-logo { padding: 1.25rem 1rem 1rem; border-bottom: 1px solid var(--border); }
-.sidebar-logo .brand { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.2rem; color: var(--gold); }
+.sidebar-logo .brand { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 1.2rem; color: var(--gold); }
 .sidebar-logo .tagline { font-size: 0.68rem; color: var(--text3); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 2px; }
 .nav-section { padding: 0.75rem 0 0.25rem; }
 .nav-label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); padding: 0 1rem 0.4rem; }
@@ -78,7 +78,7 @@ body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x:
 .page.active { display: block; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 .page-header { margin-bottom: 1.5rem; }
-.page-title { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.6rem; color: var(--gold); }
+.page-title { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 1.6rem; color: var(--gold); }
 .page-sub { font-size: 0.8rem; color: var(--text3); margin-top: 4px; }
 
 /* ── CARDS & GRIDS ── */
@@ -137,7 +137,7 @@ textarea { resize: vertical; min-height: 80px; }
 .modal-backdrop.open { display: flex; }
 .modal { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; }
 .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border); }
-.modal-title { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--gold); }
+.modal-title { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 1.1rem; color: var(--gold); }
 .modal-close { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 1.2rem; line-height: 1; padding: 0.25rem; }
 .modal-body { padding: 1.5rem; }
 .modal-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 0.75rem; }
@@ -168,7 +168,7 @@ textarea { resize: vertical; min-height: 80px; }
 .cal-dot-blue { background: var(--accent); }
 .cal-dot-green { background: var(--success); }
 .cal-nav { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-.cal-nav-title { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 1rem; color: var(--gold); flex: 1; text-align: center; }
+.cal-nav-title { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 1rem; color: var(--gold); flex: 1; text-align: center; }
 
 /* ── IMAGE PREVIEW ── */
 .img-preview { width: 80px; height: 56px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border); }
@@ -397,7 +397,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 }
 
 /* ── GRAVITY STOCKS ── */
-.revenue-big { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 2.4rem; color: var(--gold); }
+.revenue-big { font-family: var(--font-family, 'Quicksand', sans-serif); font-weight: 700; font-size: 2.4rem; color: var(--gold); }
 .progress-bar-wrap { background: var(--bg4); border-radius: 100px; height: 6px; overflow: hidden; margin: 0.4rem 0; }
 .progress-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--gold), var(--gold2)); transition: width 0.6s ease; }
 
@@ -413,7 +413,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 <body>
 
 <div id="loading">
-  <img src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold)" alt="Ibiza Mi Vida">
+  <img class="brand-logo-img" src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold)" alt="Ibiza Mi Vida">
   <div class="logo-load" style="margin-top:0.5rem">Ibiza Mi Vida</div>
   <div class="sub-load">CMS — Loading</div>
   <div class="spinner"></div>
@@ -424,7 +424,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   <!-- SIDEBAR -->
   <nav id="sidebar">
     <div class="sidebar-logo" style="display:flex;align-items:center;gap:0.75rem;padding:1rem">
-      <img src="logo.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold)" alt="Ibiza Mi Vida">
+      <img class="brand-logo-img" src="logo.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold)" alt="Ibiza Mi Vida">
       <div>
         <div class="brand" style="font-weight:600">Ibiza Mi Vida</div>
         <div class="tagline">CMS Platform</div>
@@ -1358,6 +1358,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
           <button class="tab" onclick="setSettingsTab('github')">GitHub</button>
           <button class="tab" onclick="setSettingsTab('whatsapp')">WhatsApp</button>
           <button class="tab" onclick="setSettingsTab('domains')">Domains</button>
+          <button class="tab" onclick="setSettingsTab('theme')">Vormgeving & Logo</button>
         </div>
         <div id="settings-content">
           <div class="card" id="s-supabase">
@@ -1471,6 +1472,75 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               </div>
             </div>
             <div style="margin-top:1rem;font-size:0.8rem;color:var(--text3)">Connect domains via your hosting provider (Vercel / Netlify) and point DNS to your deployment.</div>
+          </div>
+          
+          <div class="card" id="s-theme" style="display:none">
+            <div class="card-title">Vormgeving & Customizer</div>
+            <div style="background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:1rem;margin-bottom:1.5rem">
+              <div style="font-size:0.85rem;font-weight:600;color:var(--gold);margin-bottom:0.5rem">Website & CMS Styling</div>
+              <div style="font-size:0.75rem;color:var(--text3)">Personaliseer de look van uw Ibiza Mi Vida platform. Deze instellingen bepalen het lettertype, de merkkleuren en het logo op de live website én in het CMS.</div>
+            </div>
+            
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Website & CMS Lettertype (Font)</label>
+                <select id="theme-font" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
+                  <option value="Quicksand">Quicksand (Default Sleek)</option>
+                  <option value="Montserrat">Montserrat (Modern Bold)</option>
+                  <option value="Inter">Inter (Clean Neutral)</option>
+                  <option value="Outfit">Outfit (Premium Rounded)</option>
+                  <option value="Poppins">Poppins (Friendly Geometric)</option>
+                  <option value="Playfair Display">Playfair Display (Elegant Serif)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Logo URL (Website & CMS)</label>
+                <input type="text" id="theme-logo-url" placeholder="https://example.com/logo.png" oninput="previewLogo(this.value)">
+              </div>
+              <div class="form-group">
+                <label>Achtergrond Kleur (Background)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-bg" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
+                  <input type="text" id="theme-color-bg-hex" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Hoofdkleur Accent (Gold/Highlight)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-gold" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('gold', this.value)">
+                  <input type="text" id="theme-color-gold-hex" style="flex:1" placeholder="#D4AF37" oninput="syncColorInput('gold', this.value)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Secundaire Accentkleur (Blue/Buttons)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-accent" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('accent', this.value)">
+                  <input type="text" id="theme-color-accent-hex" style="flex:1" placeholder="#5B8CFF" oninput="syncColorInput('accent', this.value)">
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Tekst Kleur (Text color)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-text" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
+                  <input type="text" id="theme-color-text-hex" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
+                </div>
+              </div>
+            </div>
+            
+            <div style="margin-top:1.5rem;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem">
+              <div id="theme-logo-preview-box" style="width:60px;height:60px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <img id="theme-logo-preview" src="logo.png" style="width:100%;height:100%;object-fit:contain">
+              </div>
+              <div style="flex:1">
+                <div style="font-weight:600;font-size:0.82rem;color:var(--text)">Live Preview</div>
+                <div style="font-size:0.75rem;color:var(--text3)">De bovenstaande elementen passen zich direct aan in deze CMS tab, zodat u de look kunt uitproberen!</div>
+              </div>
+            </div>
+
+            <div style="margin-top:1.5rem;display:flex;gap:0.75rem">
+              <button class="btn btn-primary" onclick="saveThemeSettings()">Opslaan & Toepassen 🎨</button>
+              <button class="btn btn-secondary" onclick="resetThemeSettings()">Standaard Herstellen</button>
+            </div>
           </div>
         </div>
       </div>
@@ -4272,6 +4342,208 @@ function saveCloudinarySettings(){
   toast('Cloudinary settings saved ✓','success');
 }
 
+// ── CUSTOMIZER / THEME INSTANT PREVIEW & PERSISTENCE ──
+let currentThemeSettings = {
+  font_family: 'Quicksand',
+  color_bg: '#0B0B0C',
+  color_gold: '#D4AF37',
+  color_accent: '#5B8CFF',
+  color_text: '#FFFFFF',
+  logo_url: 'logo.png'
+};
+
+async function loadThemeSettings(){
+  // Load local cache immediately so UX feels instantaneous
+  const cached = localStorage.getItem('theme_settings_cache');
+  if (cached) {
+    try {
+      currentThemeSettings = JSON.parse(cached);
+      applyTheme(currentThemeSettings);
+      populateThemeForm(currentThemeSettings);
+    } catch(e) {
+      console.warn("Cached theme settings load error:", e);
+    }
+  } else {
+    applyTheme(currentThemeSettings);
+  }
+
+  // Load from Supabase to stay updated
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/site_settings`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        data.forEach(row => {
+          if (row.key && row.value) {
+            currentThemeSettings[row.key] = row.value;
+          }
+        });
+        localStorage.setItem('theme_settings_cache', JSON.stringify(currentThemeSettings));
+        applyTheme(currentThemeSettings);
+        populateThemeForm(currentThemeSettings);
+      }
+    }
+  } catch(e) {
+    console.warn("Could not sync live site settings from Supabase (probably migration pending), using cache:", e);
+  }
+}
+
+function applyTheme(theme){
+  const root = document.documentElement;
+  root.style.setProperty('--bg', theme.color_bg);
+  root.style.setProperty('--gold', theme.color_gold);
+  root.style.setProperty('--accent', theme.color_accent);
+  root.style.setProperty('--text', theme.color_text);
+  root.style.setProperty('--font-family', `'${theme.font_family}', sans-serif`);
+  
+  loadGoogleFont(theme.font_family);
+  
+  document.querySelectorAll('.brand-logo-img').forEach(img => {
+    img.src = theme.logo_url;
+  });
+}
+
+function loadGoogleFont(fontName) {
+  if (!fontName) return;
+  const fontId = 'dynamic-google-font-' + fontName.replace(/\s+/g, '-').toLowerCase();
+  if (!document.getElementById(fontId)) {
+    const link = document.createElement('link');
+    link.id = fontId;
+    link.rel = 'stylesheet';
+    link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`;
+    document.head.appendChild(link);
+  }
+}
+
+function populateThemeForm(theme) {
+  const fontEl = document.getElementById('theme-font');
+  const logoEl = document.getElementById('theme-logo-url');
+  
+  const bgEl = document.getElementById('theme-color-bg');
+  const bgHex = document.getElementById('theme-color-bg-hex');
+  
+  const goldEl = document.getElementById('theme-color-gold');
+  const goldHex = document.getElementById('theme-color-gold-hex');
+  
+  const accentEl = document.getElementById('theme-color-accent');
+  const accentHex = document.getElementById('theme-color-accent-hex');
+  
+  const textEl = document.getElementById('theme-color-text');
+  const textHex = document.getElementById('theme-color-text-hex');
+  
+  if (fontEl) fontEl.value = theme.font_family;
+  if (logoEl) logoEl.value = theme.logo_url;
+  
+  if (bgEl) bgEl.value = theme.color_bg;
+  if (bgHex) bgHex.value = theme.color_bg;
+  
+  if (goldEl) goldEl.value = theme.color_gold;
+  if (goldHex) goldHex.value = theme.color_gold;
+  
+  if (accentEl) accentEl.value = theme.color_accent;
+  if (accentHex) accentHex.value = theme.color_accent;
+  
+  if (textEl) textEl.value = theme.color_text;
+  if (textHex) textHex.value = theme.color_text;
+  
+  const previewImg = document.getElementById('theme-logo-preview');
+  if (previewImg) previewImg.src = theme.logo_url || 'logo.png';
+}
+
+async function saveThemeSettings(){
+  const font_family = document.getElementById('theme-font').value;
+  const logo_url = document.getElementById('theme-logo-url').value || 'logo.png';
+  const color_bg = document.getElementById('theme-color-bg').value;
+  const color_gold = document.getElementById('theme-color-gold').value;
+  const color_accent = document.getElementById('theme-color-accent').value;
+  const color_text = document.getElementById('theme-color-text').value;
+  
+  const newTheme = { font_family, logo_url, color_bg, color_gold, color_accent, color_text };
+  
+  try {
+    toast("Opslaan van vormgeving...", "info");
+    
+    // We update/insert individually or as bulk upsert
+    const payload = Object.keys(newTheme).map(key => ({
+      key: key,
+      value: newTheme[key]
+    }));
+    
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/site_settings`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) throw new Error("Supabase error: " + res.statusText);
+    
+    currentThemeSettings = newTheme;
+    localStorage.setItem('theme_settings_cache', JSON.stringify(newTheme));
+    applyTheme(newTheme);
+    toast("Vormgevingsinstellingen opgeslagen & gepubliceerd! 🎨", "success");
+  } catch(e) {
+    console.error("Failed to save to Supabase, fallback to local cache:", e);
+    currentThemeSettings = newTheme;
+    localStorage.setItem('theme_settings_cache', JSON.stringify(newTheme));
+    applyTheme(newTheme);
+    toast("Lokaal opgeslagen! (Kon niet direct met database verbinden)", "warning");
+  }
+}
+
+function resetThemeSettings(){
+  if (!confirm("Weet je zeker dat je alle vormgevingsinstellingen wilt herstellen naar de standaardwaarden?")) return;
+  const defaults = {
+    font_family: 'Quicksand',
+    color_bg: '#0B0B0C',
+    color_gold: '#D4AF37',
+    color_accent: '#5B8CFF',
+    color_text: '#FFFFFF',
+    logo_url: 'logo.png'
+  };
+  populateThemeForm(defaults);
+  applyTheme(defaults);
+  saveThemeSettings();
+}
+
+function previewColor(type, val){
+  const hex = document.getElementById(`theme-color-${type}-hex`);
+  if (hex) hex.value = val;
+  
+  const root = document.documentElement;
+  if (type === 'bg') root.style.setProperty('--bg', val);
+  if (type === 'gold') root.style.setProperty('--gold', val);
+  if (type === 'accent') root.style.setProperty('--accent', val);
+  if (type === 'text') root.style.setProperty('--text', val);
+}
+
+function syncColorInput(type, val){
+  if (val.match(/^#[0-9A-Fa-f]{6}$/)) {
+    const picker = document.getElementById(`theme-color-${type}`);
+    if (picker) picker.value = val;
+    previewColor(type, val);
+  }
+}
+
+function previewFont(val){
+  loadGoogleFont(val);
+  document.documentElement.style.setProperty('--font-family', `'${val}', sans-serif`);
+}
+
+function previewLogo(val){
+  const previewImg = document.getElementById('theme-logo-preview');
+  if (previewImg) previewImg.src = val || 'logo.png';
+}
+
 function loadSettings(){
   const cn=document.getElementById('cloud-name');
   const ck=document.getElementById('cloud-key');
@@ -4290,6 +4562,8 @@ function loadSettings(){
   if(cs) cs.value=localStorage.getItem('cloudinary_secret')||'';
   if(cp) cp.value=localStorage.getItem('cloudinary_preset')||'';
   if(wa) wa.value=localStorage.getItem('wa_number')||'';
+  
+  loadThemeSettings();
 }
 
 function saveWhatsApp(){
