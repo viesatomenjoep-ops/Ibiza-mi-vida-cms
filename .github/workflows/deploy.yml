@@ -38,11 +38,11 @@ jobs:
 
       - name: Check CMS file exists
         run: |
-          test -f ibiza-cms.html && echo "✅ ibiza-cms.html found" || (echo "❌ ibiza-cms.html missing" && exit 1)
+          test -f index.html && echo "✅ index.html found" || (echo "❌ index.html missing" && exit 1)
 
       - name: Check file size (warn if >5MB)
         run: |
-          SIZE=$(wc -c < ibiza-cms.html)
+          SIZE=$(wc -c < index.html)
           echo "CMS file size: ${SIZE} bytes"
           if [ $SIZE -gt 5242880 ]; then
             echo "⚠️  Warning: CMS file is larger than 5MB"
@@ -51,11 +51,37 @@ jobs:
       - name: Validate Docker Compose
         run: docker compose config --quiet && echo "✅ docker-compose.yml valid"
 
+  # ── 1.5. APPLY DATABASE MIGRATIONS ──────────────────────
+  migrate:
+    name: Push Supabase Migrations
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link and Push Migrations
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          if [ -n "$SUPABASE_ACCESS_TOKEN" ] && [ -n "$SUPABASE_DB_PASSWORD" ]; then
+            supabase link --project-ref qqstpsvalgdbjacdkmmk --password "$SUPABASE_DB_PASSWORD"
+            supabase db push
+          else
+            echo "⚠️  SUPABASE_ACCESS_TOKEN or SUPABASE_DB_PASSWORD secrets not configured in GitHub. Skipping migrations."
+          fi
+
   # ── 2. BUILD & PUSH DOCKER IMAGE ────────────────────────
   build:
     name: Build & push Docker image
     runs-on: ubuntu-latest
-    needs: validate
+    needs: [validate, migrate]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
