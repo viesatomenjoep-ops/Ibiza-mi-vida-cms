@@ -4253,6 +4253,9 @@ async function savePageContent(){
     
     refreshPreview();
     toast('Paginatekst opgeslagen & gepubliceerd naar Supabase! 🚀', 'success');
+    
+    // Auto trigger deploy to Vercel!
+    triggerDeploy();
   } catch(e) {
     console.error("Failed to save page contents to Supabase:", e);
     pageContents[tab] = {
@@ -4333,8 +4336,11 @@ function renderMediaHistory() {
     return;
   }
   container.innerHTML = history.map(url => `
-    <div style="flex-shrink:0;width:60px;height:60px;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:pointer" onclick="restoreMedia('${url}')">
-      <img src="${url}" style="width:100%;height:100%;object-fit:cover" title="Click to use this media">
+    <div style="flex-shrink:0;width:60px;height:60px;border-radius:6px;overflow:hidden;border:1px solid var(--border);cursor:grab" 
+         onclick="restoreMedia('${url}')"
+         draggable="true"
+         ondragstart="event.dataTransfer.setData('text/plain', '${url}')">
+      <img src="${url}" style="width:100%;height:100%;object-fit:cover;pointer-events:none" title="Drag me to an input field!">
     </div>
   `).join('');
 }
@@ -4700,6 +4706,9 @@ async function saveThemeSettings(){
     localStorage.setItem('theme_settings_cache', JSON.stringify(newTheme));
     applyTheme(newTheme);
     toast("Vormgevingsinstellingen opgeslagen & gepubliceerd! 🎨", "success");
+    
+    // Auto trigger deploy to Vercel!
+    triggerDeploy();
   } catch(e) {
     console.error("Failed to save to Supabase, fallback to local cache:", e);
     currentThemeSettings = newTheme;
@@ -4827,6 +4836,34 @@ function showApp(){
   if(app)app.style.display='flex';
 }
 document.addEventListener('DOMContentLoaded',()=>setTimeout(showApp,50));
+
+// ── GLOBAL DRAG & DROP FOR INPUTS ──
+document.addEventListener('dragover', (e) => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+    e.preventDefault(); 
+    e.target.style.boxShadow = '0 0 0 2px var(--gold)'; 
+  }
+});
+
+document.addEventListener('dragleave', (e) => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+    e.target.style.boxShadow = ''; 
+  }
+});
+
+document.addEventListener('drop', (e) => {
+  if (e.target.tagName === 'INPUT' && e.target.type === 'text') {
+    e.preventDefault();
+    e.target.style.boxShadow = '';
+    const data = e.dataTransfer.getData('text/plain');
+    if (data && data.startsWith('http')) {
+      e.target.value = data;
+      e.target.dispatchEvent(new Event('input', { bubbles: true }));
+      e.target.dispatchEvent(new Event('change', { bubbles: true }));
+      toast('Afbeelding succesvol in het veld gesleept! ✨', 'success');
+    }
+  }
+});
 
 window.addEventListener('load',async()=>{
   if (localStorage.getItem('cms_theme') === 'dark') {
