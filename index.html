@@ -459,8 +459,8 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         Calendar
       </div>
       <div class="nav-item" data-page="promoter">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Promoter Editor
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="2" y1="10" x2="22" y2="10"/><path d="M12 17v4M8 21h8"/></svg>
+        Website & Homepage
       </div>
     </div>
 
@@ -741,8 +741,8 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
       <!-- ══════════════ PROMOTER EDITOR ══════════════ -->
       <div class="page" id="page-promoter">
         <div class="page-header">
-          <div class="page-title" data-i18n="prom.title">Promoter Editor</div>
-          <div class="page-sub" data-i18n="prom.sub">Edit page content + Deal of the Day — live webpage preview updates as you type</div>
+          <div class="page-title" data-i18n="prom.title">Website & Homepage Editor</div>
+          <div class="page-sub" data-i18n="prom.sub">Beheer paginateksten, Deal of the Day, vormgeving, kleuren en logo's live in één sectie</div>
         </div>
         <div class="tab-bar" style="overflow-x:auto">
           <button class="tab active" onclick="setPromoterTab('homepage')">Homepage</button>
@@ -758,8 +758,11 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
           <button class="tab" onclick="setPromoterTab('ibiza-tips')">Ibiza Tips</button>
           <button class="tab" onclick="setPromoterTab('car-scooter')">Car and Scooter</button>
           <button class="tab" onclick="setPromoterTab('about')">About</button>
+          <button class="tab" onclick="setPromoterTab('theme')">🎨 Vormgeving & Logo</button>
+          <button class="tab" onclick="setPromoterTab('domains')">🌐 Domeinen & Deploy</button>
         </div>
         <div id="promoter-content">
+          <div id="promoter-page-editor-form">
           <!-- Deal of the Day banner -->
           <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--gold);border-radius:0 10px 10px 0">
             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
@@ -874,6 +877,118 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 <button class="social-action-btn">💬 Comment</button>
                 <button class="social-action-btn">↗ Share</button>
               </div>
+            </div>
+          </div>
+          </div> <!-- End #promoter-page-editor-form -->
+          
+          <!-- promoter-theme-editor-form -->
+          <div id="promoter-theme-editor-form" style="display:none">
+            <div class="card">
+              <div class="card-title">Vormgeving & Customizer</div>
+              <div style="background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:1rem;margin-bottom:1.5rem">
+                <div style="font-size:0.85rem;font-weight:600;color:var(--gold);margin-bottom:0.5rem">Website & CMS Styling</div>
+                <div style="font-size:0.75rem;color:var(--text3)">Personaliseer de look van uw Ibiza Mi Vida platform. Deze instellingen bepalen het lettertype, de merkkleuren en het logo op de live website én in het CMS.</div>
+              </div>
+              
+              <div class="form-grid">
+                <div class="form-group">
+                  <label>Website & CMS Lettertype (Font)</label>
+                  <select id="theme-font-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
+                    <option value="Quicksand">Quicksand (Default Sleek)</option>
+                    <option value="Montserrat">Montserrat (Modern Bold)</option>
+                    <option value="Inter">Inter (Clean Neutral)</option>
+                    <option value="Outfit">Outfit (Premium Rounded)</option>
+                    <option value="Poppins">Poppins (Friendly Geometric)</option>
+                    <option value="Playfair Display">Playfair Display (Elegant Serif)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Logo URL (Website & CMS)</label>
+                  <input type="text" id="theme-logo-url-promoter" placeholder="https://example.com/logo.png" oninput="previewLogo(this.value)">
+                </div>
+                <div class="form-group">
+                  <label>Achtergrond Kleur (Background)</label>
+                  <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input type="color" id="theme-color-bg-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
+                    <input type="text" id="theme-color-bg-hex-promoter" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Hoofdkleur Accent (Gold/Highlight)</label>
+                  <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input type="color" id="theme-color-gold-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('gold', this.value)">
+                    <input type="text" id="theme-color-gold-hex-promoter" style="flex:1" placeholder="#D4AF37" oninput="syncColorInput('gold', this.value)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Secundaire Accentkleur (Blue/Buttons)</label>
+                  <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input type="color" id="theme-color-accent-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('accent', this.value)">
+                    <input type="text" id="theme-color-accent-hex-promoter" style="flex:1" placeholder="#5B8CFF" oninput="syncColorInput('accent', this.value)">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Tekst Kleur (Text color)</label>
+                  <div style="display:flex;gap:0.5rem;align-items:center">
+                    <input type="color" id="theme-color-text-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
+                    <input type="text" id="theme-color-text-hex-promoter" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
+                  </div>
+                </div>
+              </div>
+              
+              <div style="margin-top:1.5rem;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem">
+                <div id="theme-logo-preview-box-promoter" style="width:60px;height:60px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
+                  <img id="theme-logo-preview-promoter" src="logo.png" style="width:100%;height:100%;object-fit:contain">
+                </div>
+                <div style="flex:1">
+                  <div style="font-weight:600;font-size:0.82rem;color:var(--text)">Live Preview</div>
+                  <div style="font-size:0.75rem;color:var(--text3)">De bovenstaande elementen passen zich direct aan in deze CMS tab, zodat u de look kunt uitproberen!</div>
+                </div>
+              </div>
+
+              <div style="margin-top:1.5rem;display:flex;gap:0.75rem">
+                <button class="btn btn-primary" onclick="saveThemeSettings()">Opslaan & Toepassen 🎨</button>
+                <button class="btn btn-secondary" onclick="resetThemeSettings()">Standaard Herstellen</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- promoter-domains-editor-form -->
+          <div id="promoter-domains-editor-form" style="display:none">
+            <div class="card">
+              <div class="card-title">🌐 Domeinen & Koppelingen</div>
+              <div style="display:flex;flex-direction:column;gap:0.75rem">
+                <div class="lead-card">
+                  <div>
+                    <div style="font-size:0.85rem;font-weight:500">ibizamivida.com</div>
+                    <div style="font-size:0.72rem;color:var(--text3)">Hoofddomein (EN/NL)</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.5rem">
+                    <div class="status-dot warn"></div>
+                    <span style="font-size:0.75rem;color:var(--warn)">Verbinding in behandeling</span>
+                  </div>
+                </div>
+                <div class="lead-card">
+                  <div>
+                    <div style="font-size:0.85rem;font-weight:500">ibizamivida.es</div>
+                    <div style="font-size:0.72rem;color:var(--text3)">Spaans domein (ES)</div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:0.5rem">
+                    <div class="status-dot warn"></div>
+                    <span style="font-size:0.75rem;color:var(--warn)">Verbinding in behandeling</span>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top:1.25rem;font-size:0.8rem;color:var(--text3)">Koppel extra domeinen via uw hosting provider (Vercel / Netlify) en wijs de DNS records naar uw deployment.</div>
+            </div>
+            
+            <div class="card" style="margin-top:1.5rem">
+              <div class="card-title">🚀 Handmatige Vercel / GitHub Publicatie</div>
+              <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem">
+                <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Handmatige Deploy Trigger</div>
+                <div style="font-size:0.75rem;color:var(--text3)">Druk op de onderstaande knop om direct een nieuwe productieversie van de website te compileren en te pushen via Vercel. Dit vernieuwt de statische caching.</div>
+              </div>
+              <button class="btn btn-primary" onclick="triggerDeploy()">Pushen naar Vercel (Production Build) ⚡</button>
             </div>
           </div>
 
@@ -1357,8 +1472,6 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
           <button class="tab" onclick="setSettingsTab('cloudinary')">Cloudinary</button>
           <button class="tab" onclick="setSettingsTab('github')">GitHub</button>
           <button class="tab" onclick="setSettingsTab('whatsapp')">WhatsApp</button>
-          <button class="tab" onclick="setSettingsTab('domains')">Domains</button>
-          <button class="tab" onclick="setSettingsTab('theme')">Vormgeving & Logo</button>
         </div>
         <div id="settings-content">
           <div class="card" id="s-supabase">
@@ -1446,101 +1559,6 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               </div>
             </div>
             <button class="btn btn-primary" style="margin-top:1rem" onclick="saveWhatsApp()" data-i18n="set.wa_save">Save WhatsApp Settings</button>
-          </div>
-          <div class="card" id="s-domains" style="display:none">
-            <div class="card-title">Domains</div>
-            <div style="display:flex;flex-direction:column;gap:0.75rem">
-              <div class="lead-card">
-                <div>
-                  <div style="font-size:0.85rem;font-weight:500">ibizamivida.com</div>
-                  <div style="font-size:0.72rem;color:var(--text3)">Primary domain (EN/NL)</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem">
-                  <div class="status-dot warn"></div>
-                  <span style="font-size:0.75rem;color:var(--warn)">Not connected yet</span>
-                </div>
-              </div>
-              <div class="lead-card">
-                <div>
-                  <div style="font-size:0.85rem;font-weight:500">ibizamivida.es</div>
-                  <div style="font-size:0.72rem;color:var(--text3)">Spanish domain (ES)</div>
-                </div>
-                <div style="display:flex;align-items:center;gap:0.5rem">
-                  <div class="status-dot warn"></div>
-                  <span style="font-size:0.75rem;color:var(--warn)">Not connected yet</span>
-                </div>
-              </div>
-            </div>
-            <div style="margin-top:1rem;font-size:0.8rem;color:var(--text3)">Connect domains via your hosting provider (Vercel / Netlify) and point DNS to your deployment.</div>
-          </div>
-          
-          <div class="card" id="s-theme" style="display:none">
-            <div class="card-title">Vormgeving & Customizer</div>
-            <div style="background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:1rem;margin-bottom:1.5rem">
-              <div style="font-size:0.85rem;font-weight:600;color:var(--gold);margin-bottom:0.5rem">Website & CMS Styling</div>
-              <div style="font-size:0.75rem;color:var(--text3)">Personaliseer de look van uw Ibiza Mi Vida platform. Deze instellingen bepalen het lettertype, de merkkleuren en het logo op de live website én in het CMS.</div>
-            </div>
-            
-            <div class="form-grid">
-              <div class="form-group">
-                <label>Website & CMS Lettertype (Font)</label>
-                <select id="theme-font" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
-                  <option value="Quicksand">Quicksand (Default Sleek)</option>
-                  <option value="Montserrat">Montserrat (Modern Bold)</option>
-                  <option value="Inter">Inter (Clean Neutral)</option>
-                  <option value="Outfit">Outfit (Premium Rounded)</option>
-                  <option value="Poppins">Poppins (Friendly Geometric)</option>
-                  <option value="Playfair Display">Playfair Display (Elegant Serif)</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Logo URL (Website & CMS)</label>
-                <input type="text" id="theme-logo-url" placeholder="https://example.com/logo.png" oninput="previewLogo(this.value)">
-              </div>
-              <div class="form-group">
-                <label>Achtergrond Kleur (Background)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-bg" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
-                  <input type="text" id="theme-color-bg-hex" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Hoofdkleur Accent (Gold/Highlight)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-gold" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('gold', this.value)">
-                  <input type="text" id="theme-color-gold-hex" style="flex:1" placeholder="#D4AF37" oninput="syncColorInput('gold', this.value)">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Secundaire Accentkleur (Blue/Buttons)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-accent" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('accent', this.value)">
-                  <input type="text" id="theme-color-accent-hex" style="flex:1" placeholder="#5B8CFF" oninput="syncColorInput('accent', this.value)">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Tekst Kleur (Text color)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-text" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
-                  <input type="text" id="theme-color-text-hex" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
-                </div>
-              </div>
-            </div>
-            
-            <div style="margin-top:1.5rem;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem">
-              <div id="theme-logo-preview-box" style="width:60px;height:60px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
-                <img id="theme-logo-preview" src="logo.png" style="width:100%;height:100%;object-fit:contain">
-              </div>
-              <div style="flex:1">
-                <div style="font-weight:600;font-size:0.82rem;color:var(--text)">Live Preview</div>
-                <div style="font-size:0.75rem;color:var(--text3)">De bovenstaande elementen passen zich direct aan in deze CMS tab, zodat u de look kunt uitproberen!</div>
-              </div>
-            </div>
-
-            <div style="margin-top:1.5rem;display:flex;gap:0.75rem">
-              <button class="btn btn-primary" onclick="saveThemeSettings()">Opslaan & Toepassen 🎨</button>
-              <button class="btn btn-secondary" onclick="resetThemeSettings()">Standaard Herstellen</button>
-            </div>
           </div>
         </div>
       </div>
@@ -4077,8 +4095,34 @@ const pageContents = {};
 
 function setPromoterTab(tab){
   currentPromoterTab = tab;
-  document.querySelectorAll('#page-promoter .tab').forEach(t=>t.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('#page-promoter .tab').forEach(t => {
+    t.classList.remove('active');
+    if (t.getAttribute('onclick')?.includes(`'${tab}'`)) {
+      t.classList.add('active');
+    }
+  });
+
+  const pageForm = document.getElementById('promoter-page-editor-form');
+  const themeForm = document.getElementById('promoter-theme-editor-form');
+  const domainsForm = document.getElementById('promoter-domains-editor-form');
+
+  if (tab === 'theme') {
+    if (pageForm) pageForm.style.display = 'none';
+    if (domainsForm) domainsForm.style.display = 'none';
+    if (themeForm) themeForm.style.display = 'block';
+    populateThemeForm(currentThemeSettings);
+    return;
+  } else if (tab === 'domains') {
+    if (pageForm) pageForm.style.display = 'none';
+    if (themeForm) themeForm.style.display = 'none';
+    if (domainsForm) domainsForm.style.display = 'block';
+    return;
+  } else {
+    if (themeForm) themeForm.style.display = 'none';
+    if (domainsForm) domainsForm.style.display = 'none';
+    if (pageForm) pageForm.style.display = 'block';
+  }
+
   const info = PROMOTER_PAGES[tab] || {label:tab, url:'ibizamivida.com'};
 
   /* Load stored values */
@@ -4104,16 +4148,57 @@ function setPromoterTab(tab){
   refreshPreview();
 }
 
-function savePageContent(){
+async function savePageContent(){
   const tab = currentPromoterTab;
-  pageContents[tab] = {
-    heroTitle: document.getElementById('page-hero-title').value,
-    heroSub:   document.getElementById('page-hero-sub').value,
-    desc:      document.getElementById('page-description').innerHTML,
-    cta:       document.getElementById('page-cta').value,
+  const heroTitle = document.getElementById('page-hero-title').value;
+  const heroSub   = document.getElementById('page-hero-sub').value;
+  const desc      = document.getElementById('page-description').innerHTML;
+  const cta       = document.getElementById('page-cta').value;
+  
+  const payload = {
+    page_name: tab,
+    hero_title: heroTitle,
+    hero_sub: heroSub,
+    description: desc,
+    cta_text: cta,
+    updated_at: new Date().toISOString()
   };
-  refreshPreview();
-  toast('Page content saved ✓ — push to Supabase to go live','success');
+
+  try {
+    toast("Paginatekst opslaan...", "info");
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/page_contents`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify(payload)
+    });
+    
+    if (!res.ok) throw new Error("Supabase error: " + res.statusText);
+    
+    pageContents[tab] = {
+      heroTitle: heroTitle,
+      heroSub: heroSub,
+      desc: desc,
+      cta: cta
+    };
+    
+    refreshPreview();
+    toast('Paginatekst opgeslagen & gepubliceerd naar Supabase! 🚀', 'success');
+  } catch(e) {
+    console.error("Failed to save page contents to Supabase:", e);
+    pageContents[tab] = {
+      heroTitle: heroTitle,
+      heroSub: heroSub,
+      desc: desc,
+      cta: cta
+    };
+    refreshPreview();
+    toast('Lokaal opgeslagen! (Kon niet direct verbinden met database)', 'warning');
+  }
 }
 
 function refreshPreview(){
@@ -4391,6 +4476,42 @@ async function loadThemeSettings(){
   } catch(e) {
     console.warn("Could not sync live site settings from Supabase (probably migration pending), using cache:", e);
   }
+
+  // Load page_contents from Supabase
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/page_contents`, {
+      headers: {
+        'apikey': SUPABASE_ANON,
+        'Authorization': 'Bearer ' + SUPABASE_ANON
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        data.forEach(row => {
+          pageContents[row.page_name] = {
+            heroTitle: row.hero_title,
+            heroSub: row.hero_sub,
+            desc: row.description,
+            cta: row.cta_text
+          };
+        });
+        // Update currently selected promoter tab's fields
+        const stored = pageContents[currentPromoterTab] || {};
+        const titleEl = document.getElementById('page-hero-title');
+        const subEl = document.getElementById('page-hero-sub');
+        const descEl = document.getElementById('page-description');
+        const ctaEl = document.getElementById('page-cta');
+        if (titleEl) titleEl.value = stored.heroTitle || '';
+        if (subEl) subEl.value = stored.heroSub || '';
+        if (descEl) descEl.innerHTML = stored.desc || '';
+        if (ctaEl) ctaEl.value = stored.cta || 'Book Now';
+        refreshPreview();
+      }
+    }
+  } catch(e) {
+    console.warn("Could not sync page contents from Supabase:", e);
+  }
 }
 
 function applyTheme(theme){
@@ -4421,20 +4542,20 @@ function loadGoogleFont(fontName) {
 }
 
 function populateThemeForm(theme) {
-  const fontEl = document.getElementById('theme-font');
-  const logoEl = document.getElementById('theme-logo-url');
+  const fontEl = document.getElementById('theme-font-promoter');
+  const logoEl = document.getElementById('theme-logo-url-promoter');
   
-  const bgEl = document.getElementById('theme-color-bg');
-  const bgHex = document.getElementById('theme-color-bg-hex');
+  const bgEl = document.getElementById('theme-color-bg-promoter');
+  const bgHex = document.getElementById('theme-color-bg-hex-promoter');
   
-  const goldEl = document.getElementById('theme-color-gold');
-  const goldHex = document.getElementById('theme-color-gold-hex');
+  const goldEl = document.getElementById('theme-color-gold-promoter');
+  const goldHex = document.getElementById('theme-color-gold-hex-promoter');
   
-  const accentEl = document.getElementById('theme-color-accent');
-  const accentHex = document.getElementById('theme-color-accent-hex');
+  const accentEl = document.getElementById('theme-color-accent-promoter');
+  const accentHex = document.getElementById('theme-color-accent-hex-promoter');
   
-  const textEl = document.getElementById('theme-color-text');
-  const textHex = document.getElementById('theme-color-text-hex');
+  const textEl = document.getElementById('theme-color-text-promoter');
+  const textHex = document.getElementById('theme-color-text-hex-promoter');
   
   if (fontEl) fontEl.value = theme.font_family;
   if (logoEl) logoEl.value = theme.logo_url;
@@ -4451,24 +4572,23 @@ function populateThemeForm(theme) {
   if (textEl) textEl.value = theme.color_text;
   if (textHex) textHex.value = theme.color_text;
   
-  const previewImg = document.getElementById('theme-logo-preview');
+  const previewImg = document.getElementById('theme-logo-preview-promoter');
   if (previewImg) previewImg.src = theme.logo_url || 'logo.png';
 }
 
 async function saveThemeSettings(){
-  const font_family = document.getElementById('theme-font').value;
-  const logo_url = document.getElementById('theme-logo-url').value || 'logo.png';
-  const color_bg = document.getElementById('theme-color-bg').value;
-  const color_gold = document.getElementById('theme-color-gold').value;
-  const color_accent = document.getElementById('theme-color-accent').value;
-  const color_text = document.getElementById('theme-color-text').value;
+  const font_family = document.getElementById('theme-font-promoter').value;
+  const logo_url = document.getElementById('theme-logo-url-promoter').value || 'logo.png';
+  const color_bg = document.getElementById('theme-color-bg-promoter').value;
+  const color_gold = document.getElementById('theme-color-gold-promoter').value;
+  const color_accent = document.getElementById('theme-color-accent-promoter').value;
+  const color_text = document.getElementById('theme-color-text-promoter').value;
   
   const newTheme = { font_family, logo_url, color_bg, color_gold, color_accent, color_text };
   
   try {
     toast("Opslaan van vormgeving...", "info");
     
-    // We update/insert individually or as bulk upsert
     const payload = Object.keys(newTheme).map(key => ({
       key: key,
       value: newTheme[key]
@@ -4516,7 +4636,7 @@ function resetThemeSettings(){
 }
 
 function previewColor(type, val){
-  const hex = document.getElementById(`theme-color-${type}-hex`);
+  const hex = document.getElementById(`theme-color-${type}-hex-promoter`);
   if (hex) hex.value = val;
   
   const root = document.documentElement;
@@ -4528,7 +4648,7 @@ function previewColor(type, val){
 
 function syncColorInput(type, val){
   if (val.match(/^#[0-9A-Fa-f]{6}$/)) {
-    const picker = document.getElementById(`theme-color-${type}`);
+    const picker = document.getElementById(`theme-color-${type}-promoter`);
     if (picker) picker.value = val;
     previewColor(type, val);
   }
@@ -4540,7 +4660,7 @@ function previewFont(val){
 }
 
 function previewLogo(val){
-  const previewImg = document.getElementById('theme-logo-preview');
+  const previewImg = document.getElementById('theme-logo-preview-promoter');
   if (previewImg) previewImg.src = val || 'logo.png';
 }
 
