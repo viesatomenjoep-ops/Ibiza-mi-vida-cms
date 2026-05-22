@@ -55,7 +55,7 @@ body { background: var(--bg); color: var(--text); height: 100dvh; display: flex;
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── LAYOUT ── */
-#app { display: flex; height: 100vh; }
+#app { display: flex; height: 100dvh; width: 100vw; overflow: hidden; }
 #sidebar { width: var(--sidebar-w); background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
 #main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
 #header { height: var(--header-h); background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 1.5rem; gap: 1rem; flex-shrink: 0; }
