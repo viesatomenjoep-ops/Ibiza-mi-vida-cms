@@ -564,6 +564,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
       </div>
       <!-- Theme toggle removed per user request -->
       <div class="header-meta" id="conn-status">● Connecting…</div>
+      <button class="header-btn" onclick="triggerDeploy()" style="background:var(--success);border-color:var(--success);color:#fff;font-weight:bold;">🚀 Publish to Live</button>
       <button class="header-btn" data-i18n="ev.add" onclick="openAddEventModal()">+ Add Event</button>
       <div class="avatar">IMV</div>
     </div>
@@ -4323,10 +4324,8 @@ async function autoSaveMedia(type, url) {
       if (error) throw error;
       
       if (currentThemeSettings) currentThemeSettings.logo_url = url;
-      toast('Logo direct opgeslagen & gepubliceerd! 🎨', 'success');
+      toast('Logo direct opgeslagen in database! 🎨 (Klik Publish to Live om live te zetten)', 'success');
     }
-    
-    triggerDeploy();
   } catch (e) {
     console.error('Auto-save error:', e);
     toast('Auto-save database error: ' + e.message, 'error');
@@ -4376,10 +4375,8 @@ async function savePageContent(){
     };
     
     refreshPreview();
-    toast('Paginatekst opgeslagen & gepubliceerd naar Supabase! 🚀', 'success');
+    toast('Paginatekst opgeslagen in Supabase! (Klik Publish to Live om live te zetten) 🚀', 'success');
     
-    // Auto trigger deploy to Vercel!
-    triggerDeploy();
   } catch(e) {
     console.error("Failed to save page contents to Supabase:", e);
     pageContents[tab] = {
@@ -4843,10 +4840,7 @@ async function saveThemeSettings(){
     currentThemeSettings = newTheme;
     localStorage.setItem('theme_settings_cache', JSON.stringify(newTheme));
     applyTheme(newTheme);
-    toast("Vormgevingsinstellingen opgeslagen & gepubliceerd! 🎨", "success");
-    
-    // Auto trigger deploy to Vercel!
-    triggerDeploy();
+    toast("Vormgevingsinstellingen opgeslagen in database! 🎨 (Klik Publish to Live om online te zetten)", "success");
   } catch(e) {
     console.error("Failed to save to Supabase, fallback to local cache:", e);
     currentThemeSettings = newTheme;
