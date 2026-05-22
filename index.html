@@ -880,6 +880,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 <input type="date" id="deal-date" style="width:150px;font-size:0.8rem" onchange="loadDayDeals()">
                 <button class="btn btn-primary btn-sm" onclick="pushDealToWebsite()">Push to Website</button>
                 <button class="btn btn-secondary btn-sm" onclick="pushDealToInstagram()">Push to Instagram</button>
+                <button class="btn btn-secondary btn-sm" onclick="pushDealToTikTok()" style="background:#111;color:#fff;border-color:#111;">Push to TikTok</button>
               </div>
             </div>
             <div id="deal-preview-area" style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem"></div>
@@ -3989,12 +3990,16 @@ function loadDayDeals(){
 }
 
 function pushDealToWebsite(){ 
-  if(!window.confirm("Weet je zeker dat je het wil pushen naar de website? (in alle drie de talen)")) return;
+  if(!window.confirm("Weet je zeker dat je deze Deal of the Day live wilt pushen naar de website? (in alle drie de talen)")) return;
   toast('Deal of the Day pushed to website ✓ — all category pages updated', 'success'); 
 }
 function pushDealToInstagram(){ 
-  if(!window.confirm("Weet je zeker dat je het wil pushen naar Instagram?")) return;
+  if(!window.confirm("Weet je zeker dat je deze Deal of the Day wilt inplannen voor Instagram?")) return;
   toast('Instagram posts queued for Deal of the Day ✓', 'success'); 
+}
+function pushDealToTikTok(){ 
+  if(!window.confirm("Weet je zeker dat je deze Deal of the Day wilt inplannen voor TikTok?")) return;
+  toast('TikTok video queued for Deal of the Day ✓', 'success'); 
 }
 
 function saveCalendarItem(){
