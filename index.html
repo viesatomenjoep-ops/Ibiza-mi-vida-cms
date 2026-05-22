@@ -35,22 +35,22 @@
 }
 
 [data-theme="dark"] {
-  /* Night Vision (Calm Soft Slate Dark Mode) */
-  --bg: #0F172A;        /* Deep Slate (Not pitch black) */
-  --bg2: #1E293B;       /* Lighter slate for panels */
-  --bg3: #334155;
-  --bg4: #475569;
-  --gold: #CBD5E1;      /* Soft light gray accents (Not pure white) */
-  --gold2: #E2E8F0;
-  --gold-dim: rgba(203,213,225,0.1);
-  --text: #E2E8F0;      /* Soft off-white/gray text for reading comfort */
-  --text2: #94A3B8;
-  --text3: #64748B;
-  --border: #334155;
-  --border2: #475569;
-  --btn-text: #0F172A;  /* Dark slate text on light gray buttons */
-  --accent: #94A3B8;
-  --warn: #64748B;
+  /* Night Vision (High-Contrast Graphite OLED) */
+  --bg: #000000;        /* Pure OLED Black for depth */
+  --bg2: #18181A;       /* Distinct dark graphite for panels */
+  --bg3: #27272A;       /* Hover states */
+  --bg4: #3F3F46;       /* Borders / input backgrounds */
+  --gold: #FFFFFF;      /* Primary accents are Pure White */
+  --gold2: #E4E4E7;     /* Hover white */
+  --gold-dim: rgba(255,255,255,0.12); /* Brighter highlight */
+  --text: #FFFFFF;      /* Pure white text for absolute readability */
+  --text2: #A1A1AA;     /* Readable gray */
+  --text3: #71717A;
+  --border: #27272A;
+  --border2: #3F3F46;
+  --btn-text: #000000;  /* Pure black text on white buttons */
+  --accent: #FFFFFF;    
+  --warn: #71717A;
 }
 
 [data-theme="dark"] .brand-logo-img {
@@ -981,6 +981,14 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 <div class="form-group">
                   <label>Logo URL (Website & CMS)</label>
                   <input type="text" id="theme-logo-url-promoter" placeholder="https://example.com/logo.png" oninput="previewLogo(this.value)">
+                </div>
+                <div class="form-group">
+                  <label>Logo Kleur / Filter (Website & CMS)</label>
+                  <select id="theme-logo-filter-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewLogoFilter(this.value)">
+                    <option value="none">Originele Kleur behouden</option>
+                    <option value="brightness(0) invert(1)">Spierwit (White)</option>
+                    <option value="brightness(0)">Pikzwart (Black)</option>
+                  </select>
                 </div>
                 <div class="form-group">
                   <label>Achtergrond Kleur (Background)</label>
@@ -4711,7 +4719,12 @@ function applyTheme(theme){
   loadGoogleFont(theme.font_family);
   
   document.querySelectorAll('.brand-logo-img').forEach(img => {
-    img.src = theme.logo_url;
+    img.src = theme.logo_url || 'logo.png';
+    if (theme.logo_filter && theme.logo_filter !== 'none') {
+      img.style.filter = theme.logo_filter;
+    } else {
+      img.style.filter = '';
+    }
   });
 }
 
@@ -4743,8 +4756,11 @@ function populateThemeForm(theme) {
   const textEl = document.getElementById('theme-color-text-promoter');
   const textHex = document.getElementById('theme-color-text-hex-promoter');
   
-  if (fontEl) fontEl.value = theme.font_family;
-  if (logoEl) logoEl.value = theme.logo_url;
+  if (fontEl) fontEl.value = theme.font_family || 'Quicksand';
+  if (logoEl) logoEl.value = theme.logo_url || 'logo.png';
+  
+  const filterEl = document.getElementById('theme-logo-filter-promoter');
+  if (filterEl) filterEl.value = theme.logo_filter || 'none';
   
   if (bgEl) bgEl.value = theme.color_bg;
   if (bgHex) bgHex.value = theme.color_bg;
@@ -4765,12 +4781,13 @@ function populateThemeForm(theme) {
 async function saveThemeSettings(){
   const font_family = document.getElementById('theme-font-promoter').value;
   const logo_url = document.getElementById('theme-logo-url-promoter').value || 'logo.png';
+  const logo_filter = document.getElementById('theme-logo-filter-promoter').value;
   const color_bg = document.getElementById('theme-color-bg-promoter').value;
   const color_gold = document.getElementById('theme-color-gold-promoter').value;
   const color_accent = document.getElementById('theme-color-accent-promoter').value;
   const color_text = document.getElementById('theme-color-text-promoter').value;
   
-  const newTheme = { font_family, logo_url, color_bg, color_gold, color_accent, color_text };
+  const newTheme = { font_family, logo_url, logo_filter, color_bg, color_gold, color_accent, color_text };
   
   try {
     toast("Opslaan van vormgeving...", "info");
