@@ -11,47 +11,49 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  /* Day Vision (Calm Business Light Mode) */
-  --bg: #f1f5f9;
-  --bg2: #ffffff;
-  --bg3: #e2e8f0;
-  --bg4: #cbd5e1;
-  --gold: #0f172a;
+  /* Day Vision (Premium Light Mode - Soft & Calm) */
+  --bg: #F3F4F6;
+  --bg2: #FFFFFF;
+  --bg3: #E5E7EB;
+  --bg4: #D1D5DB;
+  --gold: #0F172A;
   --gold2: #334155;
-  --gold-dim: rgba(15,23,42,0.08);
-  --text: #0f172a;
-  --text2: #475569;
-  --text3: #64748b;
-  --border: #e2e8f0;
-  --border2: #cbd5e1;
-  --accent: #3b82f6;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warn: #f59e0b;
+  --gold-dim: rgba(15,23,42,0.06);
+  --text: #1F2937;
+  --text2: #4B5563;
+  --text3: #6B7280;
+  --border: #E5E7EB;
+  --border2: #D1D5DB;
+  --btn-text: #FFFFFF;
+  --accent: #3B82F6;
+  --success: #10B981;
+  --danger: #EF4444;
+  --warn: #F59E0B;
   --sidebar-w: 240px;
   --header-h: 60px;
-  --base-font: 16px;
   font-family: var(--font-family, 'Quicksand', sans-serif);
 }
 
 [data-theme="dark"] {
-  /* Night Vision (Deep Slate Dark Mode) */
-  --bg: #0f172a;
-  --bg2: #1e293b;
-  --bg3: #334155;
-  --bg4: #475569;
-  --gold: #f8fafc;
-  --gold2: #cbd5e1;
-  --gold-dim: rgba(248,250,252,0.1);
-  --text: #f8fafc;
-  --text2: #cbd5e1;
-  --text3: #94a3b8;
-  --border: #334155;
-  --border2: #475569;
+  /* Night Vision (Premium Dark Mode - Soft Dark) */
+  --bg: #111827;
+  --bg2: #1F2937;
+  --bg3: #374151;
+  --bg4: #4B5563;
+  --gold: #F9FAFB;
+  --gold2: #E5E7EB;
+  --gold-dim: rgba(249,250,251,0.08);
+  --text: #F3F4F6;
+  --text2: #D1D5DB;
+  --text3: #9CA3AF;
+  --border: #374151;
+  --border2: #4B5563;
+  --btn-text: #111827;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); font-size: var(--base-font); transition: background 0.3s, color 0.3s; }
+html { font-size: 17px; }
+body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; font-family: var(--font-family, 'Quicksand', sans-serif); transition: background 0.3s, color 0.3s; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
@@ -141,7 +143,7 @@ textarea { resize: vertical; min-height: 80px; }
 
 /* ── BUTTONS ── */
 .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; white-space: nowrap; }
-.btn-primary { background: var(--gold); color: #0a0a0f; }
+.btn-primary { background: var(--gold); color: var(--btn-text); }
 .btn-primary:hover { background: var(--gold2); }
 .btn-secondary { background: var(--bg4); border: 1px solid var(--border); color: var(--text2); }
 .btn-secondary:hover { border-color: var(--border2); color: var(--text); }
@@ -4236,18 +4238,10 @@ async function savePageContent(){
     toast("Paginatekst opslaan...", "info");
     const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
     const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
-    const res = await fetch(`${activeUrl}/rest/v1/page_contents`, {
-      method: 'POST',
-      headers: {
-        'apikey': sbKey,
-        'Authorization': 'Bearer ' + sbKey,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify(payload)
-    });
+    const customSb = supabase.createClient(activeUrl, sbKey);
     
-    if (!res.ok) throw new Error("Supabase error: " + res.statusText);
+    const { error } = await customSb.from('page_contents').upsert(payload, { onConflict: 'page_name' });
+    if (error) throw error;
     
     pageContents[tab] = {
       heroTitle: heroTitle,
@@ -4695,20 +4689,12 @@ async function saveThemeSettings(){
       value: newTheme[key]
     }));
     
-    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
     const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
-    const res = await fetch(`${activeUrl}/rest/v1/site_settings`, {
-      method: 'POST',
-      headers: {
-        'apikey': sbKey,
-        'Authorization': 'Bearer ' + sbKey,
-        'Content-Type': 'application/json',
-        'Prefer': 'resolution=merge-duplicates'
-      },
-      body: JSON.stringify(payload)
-    });
+    const sbKey = localStorage.getItem('supabase_service') || localStorage.getItem('supabase_anon') || SUPABASE_ANON;
+    const customSb = supabase.createClient(activeUrl, sbKey);
     
-    if (!res.ok) throw new Error("Supabase error: " + res.statusText);
+    const { error } = await customSb.from('site_settings').upsert(payload, { onConflict: 'key' });
+    if (error) throw error;
     
     currentThemeSettings = newTheme;
     localStorage.setItem('theme_settings_cache', JSON.stringify(newTheme));
