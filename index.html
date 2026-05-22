@@ -256,6 +256,13 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   touch-action: manipulation;
 }
 
+/* Grid helper */
+.grid-2-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   .mobile-menu-btn {
@@ -553,7 +560,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
           </div>
         </div>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="grid-2-cols">
           <div class="card">
             <div class="card-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/></svg>
@@ -764,7 +771,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             </div>
             <div id="deal-preview-area" style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem"></div>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+          <div class="grid-2-cols">
             <div>
               <div class="form-group" style="margin-bottom:1rem">
                 <label>Page Hero Title</label>
@@ -875,7 +882,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
           <div class="page-title" data-i18n="soc.title">Social Planner</div>
           <div class="page-sub" data-i18n="soc.sub">Schedule & push content to Instagram, TikTok and the website</div>
         </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+        <div class="grid-2-cols">
           <div>
             <div class="card">
               <div class="card-title">Create Post</div>
@@ -1046,7 +1053,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         </div>
 
         <!-- Domain status banners -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+        <div class="grid-2-cols" style="margin-bottom:1.25rem">
           <div class="card" style="padding:1rem;border-left:3px solid var(--gold);border-radius:0 10px 10px 0">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
               <div style="display:flex;align-items:center;gap:0.5rem">
@@ -1300,7 +1307,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         </div>
 
         <!-- Per-category editors -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem" id="cat-commission-grid">
+        <div class="grid-2-cols" id="cat-commission-grid">
           <!-- Built by JS -->
         </div>
 
@@ -3717,8 +3724,8 @@ function togglePreviewDevice(device){
   document.getElementById('prev-desk').style.cssText = device==='desktop' ? 'background:var(--gold-dim);border-color:var(--border2);color:var(--gold)' : '';
   document.getElementById('prev-mob').style.cssText  = device==='mobile'  ? 'background:var(--gold-dim);border-color:var(--border2);color:var(--gold)' : '';
   if(device==='mobile'){
-    wrap.style.cssText='display:flex;justify-content:center;background:var(--bg4);padding:16px;transition:all 0.3s';
-    iframe.style.cssText='width:375px;height:520px;border:none;border-radius:12px;box-shadow:0 0 0 8px #222';
+    wrap.style.cssText='display:flex;justify-content:center;background:var(--bg4);padding:16px;transition:all 0.3s;max-width:100%;overflow:hidden';
+    iframe.style.cssText='width:375px;max-width:100%;height:520px;border:none;border-radius:12px;box-shadow:0 0 0 8px #222';
   } else {
     wrap.style.cssText='width:100%;overflow:hidden;transition:all 0.3s';
     iframe.style.cssText='width:100%;height:520px;border:none;background:#fff';
