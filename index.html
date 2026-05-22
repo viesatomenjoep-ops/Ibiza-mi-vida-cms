@@ -275,6 +275,21 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   gap: 1rem;
 }
 
+/* ── LAYOUT UTILITIES ── */
+.grid-2-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .grid-2-cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+}
+
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
   html, body {
