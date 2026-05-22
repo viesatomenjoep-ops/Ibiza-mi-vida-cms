@@ -11,31 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  /* Day Vision (Luxury Taupe / Champagne) */
-  --bg: #F5F5F4;        /* Stone 100 - very soft warm sand background */
-  --bg2: #FFFFFF;       /* Pure white panels for crisp contrast */
-  --bg3: #E7E5E4;       /* Stone 200 - hover states */
-  --bg4: #D6D3D1;       /* Stone 300 - inputs/borders */
-  --gold: #44403C;      /* Stone 700 - very dark taupe/brown for buttons */
-  --gold2: #57534E;     
-  --gold-dim: rgba(68, 64, 60, 0.08);
-  --text: #1C1917;      /* Stone 900 - nearly black text */
-  --text2: #44403C;
-  --text3: #78716C;
-  --border: #E7E5E4;
-  --border2: #D6D3D1;
-  --btn-text: #FFFFFF;  /* White letters on dark taupe buttons */
-  --accent: #57534E;    
-  --success: #10B981;   
-  --danger: #EF4444;    
-  --warn: #D97706;      
-  --sidebar-w: 240px;
-  --header-h: 60px;
-  font-family: var(--font-family, 'Quicksand', sans-serif);
-}
-
-[data-theme="dark"] {
-  /* Night Vision (High-Contrast Graphite Gray) */
+  /* Permanent Graphite Dashboard (No Day/Night Mode) */
   --bg: #09090B;        /* Near black / deep zinc for depth */
   --bg2: #18181B;       /* Dark gray for panels */
   --bg3: #27272A;       /* Hover states */
@@ -50,10 +26,15 @@
   --border2: #3F3F46;
   --btn-text: #09090B;  /* Black text on white buttons */
   --accent: #FFFFFF;    
-  --warn: #F59E0B;
+  --success: #10B981;   
+  --danger: #EF4444;    
+  --warn: #F59E0B;      
+  --sidebar-w: 240px;
+  --header-h: 60px;
+  font-family: var(--font-family, 'Quicksand', sans-serif);
 }
 
-[data-theme="dark"] .brand-logo-img {
+.brand-logo-img {
   filter: brightness(0) invert(1);
 }
 
@@ -581,7 +562,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         <button class="lang-btn" onclick="setLang('nl')">NL</button>
         <button class="lang-btn" onclick="setLang('es')">ES</button>
       </div>
-      <button class="header-btn" onclick="toggleTheme()" id="theme-toggle-btn" style="background:transparent;border:1px solid var(--border);color:var(--text);padding:0.4rem 0.8rem;">🌙 Night</button>
+      <!-- Theme toggle removed per user request -->
       <div class="header-meta" id="conn-status">● Connecting…</div>
       <button class="header-btn" data-i18n="ev.add" onclick="openAddEventModal()">+ Add Event</button>
       <div class="avatar">IMV</div>
@@ -4270,13 +4251,21 @@ function setPromoterTab(tab){
   document.getElementById('page-cta').value         = stored.cta      || 'Book Now';
 
   const heroPrev = document.getElementById('hero-preview');
+  const heroUploadBox = document.querySelector('.img-upload-box[data-droptype="hero"]');
+  
   if (heroPrev) {
     if (stored.heroImg) {
       heroPrev.innerHTML = `<img src="${stored.heroImg}" style="width:100%;border-radius:6px;margin-top:0.5rem;max-height:140px;object-fit:cover">`;
       heroPrev.dataset.cloudinaryUrl = stored.heroImg;
+      if (heroUploadBox) {
+        heroUploadBox.innerHTML = `<div style="font-weight:600;color:var(--success);margin-bottom:0.5rem">Actieve Hero Image ✓</div><div style="font-size:0.75rem;color:var(--text3)">Klik om een nieuwe foto (of video) te uploaden</div>`;
+      }
     } else {
       heroPrev.innerHTML = '';
       delete heroPrev.dataset.cloudinaryUrl;
+      if (heroUploadBox) {
+        heroUploadBox.innerHTML = `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><div>Click to upload image (4K supported)</div><div style="font-size:0.7rem;margin-top:4px;color:var(--text3)">JPG, PNG, WebP, MP4 · Max 50MB</div>`;
+      }
     }
   }
 
@@ -4582,7 +4571,7 @@ async function handleMediaUpload(input,type){
       toast('Logo uploaded successfully ✓','success');
       const uploadBox=document.getElementById('logo-upload').parentElement.querySelector('.img-upload-box');
       if(uploadBox){
-        uploadBox.innerHTML=`<img src="${url}" style="max-height:60px;object-fit:contain"><div style="margin-top:0.4rem;font-size:0.7rem;color:var(--success)">Uploaded ✓</div>`;
+        uploadBox.innerHTML=`<img src="${url}" style="max-height:60px;object-fit:contain"><div style="margin-top:0.4rem;font-size:0.7rem;color:var(--success)">Actief Logo ✓</div>`;
         uploadBox.dataset.cloudinaryUrl=url;
       }
       const logoInput = document.getElementById('theme-logo-url-promoter');
@@ -4797,7 +4786,14 @@ function populateThemeForm(theme) {
   const filterEl = document.getElementById('theme-logo-filter-promoter');
   if (filterEl) filterEl.value = theme.logo_filter || 'none';
   
-  if (bgEl) bgEl.value = theme.color_bg;
+  // Visually populate the logo upload box in the promoter panel
+  const logoUploadBox = document.querySelector('.img-upload-box[data-droptype="logo"]');
+  if (logoUploadBox && theme.logo_url) {
+    logoUploadBox.innerHTML = `<img src="${theme.logo_url}" style="max-height:60px;object-fit:contain"><div style="margin-top:0.4rem;font-size:0.7rem;color:var(--success)">Actief Logo ✓</div>`;
+    logoUploadBox.dataset.cloudinaryUrl = theme.logo_url;
+  }
+  
+  if (bgEl) bgEl.value = theme.color_bg || '#FFFFFF';
   if (bgHex) bgHex.value = theme.color_bg;
   
   if (goldEl) goldEl.value = theme.color_gold;
