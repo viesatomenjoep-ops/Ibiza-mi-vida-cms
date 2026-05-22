@@ -11,24 +11,24 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <style>
 :root {
-  /* Day Vision (Calm Soft Slate Light Mode) */
-  --bg: #F8FAFC;
-  --bg2: #FFFFFF;
-  --bg3: #F1F5F9;
-  --bg4: #E2E8F0;
-  --gold: #334155;      /* Slate Gray for accents/buttons (Not black) */
-  --gold2: #475569;     
-  --gold-dim: rgba(51,65,85,0.08);
-  --text: #1E293B;      /* Very dark slate text (Softer than black) */
-  --text2: #475569;
-  --text3: #64748B;
-  --border: #E2E8F0;
-  --border2: #CBD5E1;
-  --btn-text: #F8FAFC;  /* Soft white text on slate buttons */
-  --accent: #475569;    
+  /* Day Vision (Calm Ash/Zinc Gray - No Pure White) */
+  --bg: #E4E4E7;        /* Solid light gray background */
+  --bg2: #F4F4F5;       /* Off-white/silver for panels (NOT pure white) */
+  --bg3: #D4D4D8;
+  --bg4: #A1A1AA;
+  --gold: #18181B;      /* Almost black accents */
+  --gold2: #27272A;     
+  --gold-dim: rgba(24,24,27,0.08);
+  --text: #18181B;      
+  --text2: #3F3F46;
+  --text3: #52525B;
+  --border: #D4D4D8;
+  --border2: #A1A1AA;
+  --btn-text: #F4F4F5;  
+  --accent: #27272A;    
   --success: #10B981;   
   --danger: #EF4444;    
-  --warn: #64748B;      
+  --warn: #71717A;      
   --sidebar-w: 240px;
   --header-h: 60px;
   font-family: var(--font-family, 'Quicksand', sans-serif);
@@ -4218,8 +4218,8 @@ function setPromoterTab(tab){
 
 async function autoSaveMedia(type, url) {
   try {
-    const sbKey = localStorage.getItem('supabase_service') || SUPABASE_SERVICE;
-    const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const activeUrl = SUPABASE_URL;
     const customSb = typeof supabase !== 'undefined' ? supabase.createClient(activeUrl, sbKey) : null;
     if(!customSb) return;
 
@@ -4270,8 +4270,8 @@ async function savePageContent(){
 
   try {
     toast("Paginatekst opslaan...", "info");
-    const sbKey = localStorage.getItem('supabase_service') || SUPABASE_SERVICE;
-    const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const activeUrl = SUPABASE_URL;
     const customSb = supabase.createClient(activeUrl, sbKey);
     
     const { error } = await customSb.from('page_contents').upsert(payload, { onConflict: 'page_name' });
@@ -4525,10 +4525,7 @@ async function testSupabase(){
   if(!el) return;
   el.textContent='Testing…';
   try {
-    const customSb = supabase.createClient(
-      localStorage.getItem('supabase_url') || SUPABASE_URL,
-      localStorage.getItem('supabase_service') || SUPABASE_SERVICE
-    );
+    const customSb = supabase.createClient(SUPABASE_URL, SUPABASE_SERVICE);
     const {data,error}=await customSb.from('featured_events').select('count',{count:'exact',head:true});
     if(error)throw error;
     el.innerHTML='<span style="color:var(--success)">● Connected ✓</span>';
@@ -4730,8 +4727,8 @@ async function saveThemeSettings(){
       value: newTheme[key]
     }));
     
-    const activeUrl = localStorage.getItem('supabase_url') || SUPABASE_URL;
-    const sbKey = localStorage.getItem('supabase_service') || SUPABASE_SERVICE;
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
     const customSb = supabase.createClient(activeUrl, sbKey);
     
     const { error } = await customSb.from('site_settings').upsert(payload, { onConflict: 'key' });
