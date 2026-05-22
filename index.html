@@ -41,7 +41,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal wobble on mobile */
 }
 body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; font-size: 0.95rem; line-height: 1.5; font-family: var(--font-family, 'Quicksand', sans-serif); transition: background 0.3s, color 0.3s; }
 ::-webkit-scrollbar { width: 4px; height: 4px; }
@@ -278,6 +277,9 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden;
+  }
   .mobile-menu-btn {
     display: flex;
   }
