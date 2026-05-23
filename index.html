@@ -498,7 +498,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 <body>
 
 <div id="loading">
-  <img class="brand-logo-img" src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);filter:invert(1) brightness(2);" alt="Ibiza Mi Vida">
+  <img class="brand-logo-img" src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
   <div class="logo-load" style="margin-top:0.5rem">Ibiza Mi Vida</div>
   <div class="sub-load">CMS — Loading</div>
   <div class="spinner"></div>
@@ -509,7 +509,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   <!-- SIDEBAR -->
   <nav id="sidebar">
     <div class="sidebar-logo" style="display:flex;align-items:center;gap:0.75rem;padding:1rem">
-      <img class="brand-logo-img" src="logo.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold);filter:invert(1) brightness(2);" alt="Ibiza Mi Vida">
+      <img class="brand-logo-img" src="logo.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
       <div>
         <div class="brand" style="font-weight:600">Ibiza Mi Vida</div>
         <div class="tagline">CMS Platform</div>
@@ -1072,7 +1072,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               
               <div style="margin-top:1.5rem;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem">
                 <div id="theme-logo-preview-box-promoter" style="width:60px;height:60px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
-                  <img id="theme-logo-preview-promoter" src="logo.png" style="width:100%;height:100%;object-fit:contain">
+                  <img id="theme-logo-preview-promoter" src="logo.png" style="width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1);">
                 </div>
                 <div style="flex:1">
                   <div style="font-weight:600;font-size:0.82rem;color:var(--text)">Live Preview</div>
@@ -4818,10 +4818,12 @@ function applyTheme(theme){
   
   document.querySelectorAll('.brand-logo-img').forEach(img => {
     img.src = theme.logo_url || 'logo.png';
-    if (theme.logo_filter && theme.logo_filter !== 'none') {
+    if (theme.logo_filter === 'none') {
+      img.style.filter = '';
+    } else if (theme.logo_filter) {
       img.style.filter = theme.logo_filter;
     } else {
-      img.style.filter = '';
+      img.style.filter = 'brightness(0) invert(1)';
     }
   });
 }
@@ -4880,7 +4882,16 @@ function populateThemeForm(theme) {
   if (textHex) textHex.value = theme.color_text;
   
   const previewImg = document.getElementById('theme-logo-preview-promoter');
-  if (previewImg) previewImg.src = theme.logo_url || 'logo.png';
+  if (previewImg) {
+    previewImg.src = theme.logo_url || 'logo.png';
+    if (theme.logo_filter === 'none') {
+      previewImg.style.filter = '';
+    } else if (theme.logo_filter) {
+      previewImg.style.filter = theme.logo_filter;
+    } else {
+      previewImg.style.filter = 'brightness(0) invert(1)';
+    }
+  }
 }
 
 async function saveThemeSettings(){
@@ -4964,6 +4975,19 @@ function previewFont(val){
 function previewLogo(val){
   const previewImg = document.getElementById('theme-logo-preview-promoter');
   if (previewImg) previewImg.src = val || 'logo.png';
+}
+
+function previewLogoFilter(val){
+  const previewImg = document.getElementById('theme-logo-preview-promoter');
+  if (previewImg) {
+    if (val === 'none') {
+      previewImg.style.filter = '';
+    } else if (val) {
+      previewImg.style.filter = val;
+    } else {
+      previewImg.style.filter = 'brightness(0) invert(1)';
+    }
+  }
 }
 
 function loadSettings(){
