@@ -4584,18 +4584,26 @@ async function savePageContent(silent = false){
 
 
 
+
 async function loadInteractivePreview(url) {
   const iframe = document.getElementById('webpage-preview');
   iframe.removeAttribute('src');
   iframe.srcdoc = "<html><body style='font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#f9f9f9;color:#999;font-size:14px'><div>Loading interactive editor...</div></body></html>";
   
   try {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-    const response = await fetch(proxyUrl);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3-second timeout for proxy
+    
+    // Add cache buster to bypass aggressive proxy caching
+    const urlWithCacheBuster = url.includes('?') ? url + '&_cb=' + Date.now() : url + '?_cb=' + Date.now();
+    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(urlWithCacheBuster)}`;
+    
+    const response = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(timeoutId);
     if (!response.ok) throw new Error("Proxy response not OK");
-    const data = await response.json();
-    if (!data.contents) throw new Error("No contents from proxy");
-    let html = data.contents;
+    
+    let html = await response.text();
+    if (!html || html.length < 100) throw new Error("No contents from proxy");
     
     // Strip all script tags from the HTML so Next.js React Hydration doesn't crash the proxy!
     html = html.replace(new RegExp('<script\\b[^<]*(?:(?!<\\/script>)<[^<]*)*<\\/script>', 'gi'), '');
@@ -4610,6 +4618,9 @@ async function loadInteractivePreview(url) {
           e.preventDefault();
           e.stopPropagation();
           let target = e.target;
+          let link = target.closest('a');
+          let href = link ? link.href : null;
+          
           let text = target.innerText || target.textContent;
           let isImg = target.tagName.toLowerCase() === 'img';
           let imgSrc = isImg ? target.src : null;
@@ -4623,7 +4634,8 @@ async function loadInteractivePreview(url) {
             tag: target.tagName,
             text: text,
             isImage: isImg,
-            src: imgSrc
+            src: imgSrc,
+            href: href
           }, '*');
           let oldOutline = target.style.outline;
           target.style.outline = '3px solid #D4AF37';
@@ -4635,16 +4647,36 @@ async function loadInteractivePreview(url) {
     html = html.replace('</body>', `${script}</body>`);
     iframe.srcdoc = html;
   } catch(e) {
-    console.warn("Interactive load failed, falling back to src", e);
+    console.warn("Interactive load failed, falling back to normal view", e.message);
     iframe.removeAttribute('srcdoc');
-    iframe.src = url;
+    // Fallback normal loading with cache buster
+    iframe.src = url.includes('?') ? url + '&_cb=' + Date.now() : url + '?_cb=' + Date.now();
   }
 }
 
-// Add message listener for iframe clicks
 window.addEventListener('message', function(event) {
   if (event.data && event.data.type === 'EDITOR_CLICK') {
     const data = event.data;
+    if (data.href) {
+      const urlObj = new URL(data.href, 'https://ibiza-mi-vida-website11.vercel.app');
+      let path = urlObj.pathname;
+      if(path.endsWith('/')) path = path.slice(0,-1);
+      const parts = path.split('/');
+      const lastPart = parts[parts.length-1];
+      
+      let matchedTab = null;
+      for (const [key, val] of Object.entries(PROMOTER_PAGES)) {
+        if (val.url.endsWith(lastPart)) {
+          matchedTab = key; break;
+        }
+      }
+      if (matchedTab && matchedTab !== currentPromoterTab) {
+        toast('Navigeren naar categorie: ' + PROMOTER_PAGES[matchedTab].label, 'info');
+        setPromoterTab(matchedTab);
+        return; // Don't do other click actions if we navigated
+      }
+    }
+    
     if (data.isImage) {
       document.getElementById('editor-block-hero').scrollIntoView({behavior:'smooth'});
       toast('Afbeelding geselecteerd in viewer!', 'info');
@@ -5233,10 +5265,15 @@ function previewPage(){
     savePageContent(true).then(() => {
       if(iframe && iframe.src) {
         try {
-          const url = new URL(iframe.src);
-          url.searchParams.set('t', Date.now());
-          iframe.src = url.toString();
-          iframe.onload = () => { iframe.style.opacity = '1'; };
+          const liveUrl = iframe.getAttribute('data-loaded-url');
+          if (iframe.hasAttribute('srcdoc') && liveUrl) {
+            loadInteractivePreview(liveUrl).then(() => { iframe.style.opacity = '1'; });
+          } else {
+            const url = new URL(iframe.src);
+            url.searchParams.set('t', Date.now());
+            iframe.src = url.toString();
+            iframe.onload = () => { iframe.style.opacity = '1'; };
+          }
         } catch(e) {
           iframe.style.opacity = '1';
         }
