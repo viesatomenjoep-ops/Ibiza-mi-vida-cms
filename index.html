@@ -864,31 +864,36 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               <div class="form-group" style="margin-bottom:1rem">
                 <label data-i18n="promo.deal_cat">Category</label>
                 <select id="deal-category" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem">
+                  <option value="deals-of-the-day">Deals of the Day</option>
+                  <option value="boat-charter">Private Boat Charters</option>
                   <option value="club-ticket">Club Tickets</option>
                   <option value="boat-party">Boat Parties</option>
-                  <option value="boat-charter">Private Boat Charters</option>
-                  <option value="drink-packages">Drink Packages</option>
                   <option value="catamaran">VIP Catamaran</option>
+                  <option value="formentera">Formentera Trips</option>
+                  <option value="guestlist">Guestlist</option>
+                  <option value="drink-packages">Drink Packages</option>
+                  <option value="car-rental">Car & Scooter Rental</option>
                 </select>
               </div>
 
               <!-- Multilingual Titles -->
+              <!-- Multilingual Titles -->
               <div class="form-group" style="margin-bottom:0.75rem">
                 <label data-i18n="promo.deal_title_en">Title (EN)</label>
-                <input type="text" id="deal-title-en" placeholder="e.g. VIP Boat Party Special">
+                <input type="text" id="deal-title-en" placeholder="e.g. VIP Boat Party Special" oninput="sendPreviewUpdate()">
               </div>
               <div class="form-group" style="margin-bottom:0.75rem">
                 <label data-i18n="promo.deal_title_nl">Title (NL)</label>
-                <input type="text" id="deal-title-nl" placeholder="bijv. VIP Bootfeest Special">
+                <input type="text" id="deal-title-nl" placeholder="bijv. VIP Bootfeest Special" oninput="sendPreviewUpdate()">
               </div>
               <div class="form-group" style="margin-bottom:1rem">
                 <label data-i18n="promo.deal_title_es">Title (ES)</label>
-                <input type="text" id="deal-title-es" placeholder="ej. Especial Fiesta en Barco VIP">
+                <input type="text" id="deal-title-es" placeholder="ej. Especial Fiesta en Barco VIP" oninput="sendPreviewUpdate()">
               </div>
 
               <div class="form-group" style="margin-bottom:1rem">
                 <label data-i18n="promo.deal_price">Price (€)</label>
-                <input type="number" id="deal-price" placeholder="89.00">
+                <input type="number" id="deal-price" placeholder="89.00" oninput="sendPreviewUpdate()">
               </div>
 
               <div class="form-group">
@@ -945,8 +950,30 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             
             <div id="preview-wrap" style="flex:1;position:relative;overflow:hidden;background:#fff">
               
-              <!-- Live preview iframe -->
-              <iframe id="webpage-preview" style="width:100%;height:100%;border:none" title="Page preview" src="https://ibiza-mi-vida-website11.vercel.app/"></iframe>
+              <!-- Local Component Preview -->
+              <iframe id="webpage-preview" style="width:100%;height:100%;border:none" title="Page preview" src="/deals-of-the-day?admin_preview=1"></iframe>
+            </div>
+            
+            <script>
+              function sendPreviewUpdate() {
+                const iframe = document.getElementById('webpage-preview');
+                if (!iframe || !iframe.contentWindow) return;
+                const dealData = {
+                  type: 'ADMIN_PREVIEW_UPDATE',
+                  category: document.getElementById('deal-category')?.value || 'deals-of-the-day',
+                  title_en: document.getElementById('deal-title-en')?.value || '',
+                  title_nl: document.getElementById('deal-title-nl')?.value || '',
+                  title_es: document.getElementById('deal-title-es')?.value || '',
+                  price: document.getElementById('deal-price')?.value || '',
+                  target_date: document.getElementById('promoter-date-select')?.value || ''
+                };
+                iframe.contentWindow.postMessage(dealData, '*');
+              }
+              
+              // Automatically send update when category changes
+              document.getElementById('deal-category').addEventListener('change', sendPreviewUpdate);
+              document.getElementById('promoter-date-select').addEventListener('change', sendPreviewUpdate);
+            </script>
             </div>
           </div>
           
