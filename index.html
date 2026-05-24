@@ -876,6 +876,15 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 </select>
               </div>
 
+              <!-- SEARCH PRESET -->
+              <div class="form-group" style="margin-bottom:1rem; padding:0.75rem; background:var(--bg3); border-radius:6px; border:1px solid var(--border)">
+                <label style="color:var(--gold)">🔍 Zoek bestaand event (Auto-fill / Presets)</label>
+                <input type="text" id="deal-preset-search" placeholder="Typ bijv. Amnesia of Boat Party..." oninput="filterPresets(this.value)" style="margin-bottom:0.5rem">
+                <div id="preset-dropdown" style="display:none; max-height:150px; overflow-y:auto; background:var(--bg2); border:1px solid var(--border); border-radius:4px; padding:0.5rem; gap:0.25rem; flex-direction:column">
+                  <!-- JS filled -->
+                </div>
+              </div>
+
               <!-- Multilingual Titles -->
               <!-- Multilingual Titles -->
               <div class="form-group" style="margin-bottom:0.75rem">
@@ -909,9 +918,20 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             <!-- WEEK SCHEDULE -->
             <div class="card" style="border-left:4px solid var(--success);padding:1.25rem;">
               <div style="font-size:1rem;font-weight:700;color:var(--success);margin-bottom:1rem" data-i18n="promo.week_title">3. Deal of the Week (Overzicht)</div>
-              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem" data-i18n="promo.week_sub">Manage the bulk events shown for the rest of the week below the daily deal.</div>
+              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem" data-i18n="promo.week_sub">Beheer alle events voor de komende week. Voeg ze toe vanuit de presets.</div>
               
-              <button class="btn btn-secondary w-full" style="justify-content:center" onclick="alert('Opening Week Scheduler...')" data-i18n="promo.week_btn">+ Add Weekly Event</button>
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Voeg event toe (Snel Zoeken)</label>
+                <div style="display:flex;gap:0.5rem">
+                  <input type="text" id="week-preset-search" placeholder="Zoek event..." style="flex:1" list="week-preset-list">
+                  <datalist id="week-preset-list"></datalist>
+                  <button class="btn btn-secondary" onclick="addWeeklyEvent()">Toevoegen</button>
+                </div>
+              </div>
+
+              <div id="weekly-events-list" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem">
+                <!-- JS filled list of weekly events -->
+              </div>
             </div>
             
             <!-- Hidden legacy elements to avoid breaking old JS references if any exist -->
@@ -973,6 +993,82 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               // Automatically send update when category changes
               document.getElementById('deal-category').addEventListener('change', sendPreviewUpdate);
               document.getElementById('promoter-date-select').addEventListener('change', sendPreviewUpdate);
+
+              // ---------------------------------------------------------
+              // PROMOTER PRESETS & SCHEDULING LOGIC
+              // ---------------------------------------------------------
+              const PROMOTER_PRESETS = [
+                { category: 'club-ticket', title_en: 'Amnesia VIP Balcony', title_nl: 'Amnesia VIP Balkon', title_es: 'Amnesia Balcón VIP', price: 120 },
+                { category: 'boat-party', title_en: 'Oceanbeat Ibiza Boat Party', title_nl: 'Oceanbeat Ibiza Bootfeest', title_es: 'Oceanbeat Fiesta en Barco', price: 89 },
+                { category: 'catamaran', title_en: 'Formentera VIP Catamaran', title_nl: 'Formentera VIP Catamaran', title_es: 'Catamarán VIP Formentera', price: 150 },
+                { category: 'club-ticket', title_en: 'Pacha Flower Power Entry', title_nl: 'Pacha Flower Power Ticket', title_es: 'Entrada Pacha Flower Power', price: 75 },
+                { category: 'drink-packages', title_en: 'Ushuaia Drink Package', title_nl: 'Ushuaia Drankpakket', title_es: 'Paquete de Bebidas Ushuaia', price: 50 },
+                { category: 'private-boat-charters', title_en: 'Sunseeker 68 Charter', title_nl: 'Sunseeker 68 Jacht', title_es: 'Alquiler Sunseeker 68', price: 2500 }
+              ];
+
+              function filterPresets(query) {
+                const dropdown = document.getElementById('preset-dropdown');
+                if(!query) { dropdown.style.display = 'none'; return; }
+                
+                const matches = PROMOTER_PRESETS.filter(p => p.title_en.toLowerCase().includes(query.toLowerCase()) || p.title_nl.toLowerCase().includes(query.toLowerCase()));
+                if(matches.length === 0) { dropdown.style.display = 'none'; return; }
+                
+                dropdown.style.display = 'flex';
+                dropdown.innerHTML = matches.map(m => `
+                  <div style="padding:0.5rem;background:var(--bg4);border-radius:4px;cursor:pointer;font-size:0.85rem;display:flex;justify-content:space-between;border:1px solid var(--border)" onclick="applyPreset('${m.title_en}')">
+                    <span>${m.title_en}</span>
+                    <span style="color:var(--gold);font-weight:bold">€${m.price}</span>
+                  </div>
+                `).join('');
+              }
+
+              function applyPreset(titleEn) {
+                const preset = PROMOTER_PRESETS.find(p => p.title_en === titleEn);
+                if(preset) {
+                  document.getElementById('deal-category').value = preset.category;
+                  document.getElementById('deal-title-en').value = preset.title_en;
+                  document.getElementById('deal-title-nl').value = preset.title_nl;
+                  document.getElementById('deal-title-es').value = preset.title_es;
+                  document.getElementById('deal-price').value = preset.price;
+                  document.getElementById('preset-dropdown').style.display = 'none';
+                  document.getElementById('deal-preset-search').value = '';
+                  sendPreviewUpdate();
+                }
+              }
+
+              setTimeout(() => {
+                const list = document.getElementById('week-preset-list');
+                if(list) {
+                  list.innerHTML = PROMOTER_PRESETS.map(p => `<option value="${p.title_en}">`).join('');
+                }
+              }, 500);
+
+              let weeklyEvents = [];
+              function addWeeklyEvent() {
+                const query = document.getElementById('week-preset-search').value;
+                if(!query) return;
+                const preset = PROMOTER_PRESETS.find(p => p.title_en === query);
+                if(preset) {
+                  weeklyEvents.push({...preset, id: Date.now()});
+                } else {
+                  weeklyEvents.push({ title_en: query, category: 'custom', price: 0, id: Date.now() });
+                }
+                document.getElementById('week-preset-search').value = '';
+                renderWeeklyEvents();
+              }
+
+              function renderWeeklyEvents() {
+                const container = document.getElementById('weekly-events-list');
+                container.innerHTML = weeklyEvents.map(e => `
+                  <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg3);padding:0.75rem;border-radius:6px;font-size:0.85rem;border:1px solid var(--border)">
+                    <div>
+                      <div style="font-weight:600">${e.title_en}</div>
+                      <div style="color:var(--text3);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.05em;margin-top:0.25rem">${e.category} | €${e.price}</div>
+                    </div>
+                    <button onclick="weeklyEvents = weeklyEvents.filter(x => x.id !== ${e.id}); renderWeeklyEvents()" style="background:none;border:none;color:var(--accent);cursor:pointer;padding:0.5rem">✕</button>
+                  </div>
+                `).join('');
+              }
             </script>
             </div>
           </div>
