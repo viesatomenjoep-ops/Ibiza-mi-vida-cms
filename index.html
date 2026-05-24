@@ -4588,7 +4588,9 @@ async function loadInteractivePreview(url) {
   try {
     const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
     const response = await fetch(proxyUrl);
+    if (!response.ok) throw new Error("Proxy response not OK");
     const data = await response.json();
+    if (!data.contents) throw new Error("No contents from proxy");
     let html = data.contents;
     
     // Inject base tag for assets
@@ -4626,7 +4628,8 @@ async function loadInteractivePreview(url) {
     html = html.replace('</body>', `${script}</body>`);
     iframe.srcdoc = html;
   } catch(e) {
-    console.error("Interactive load failed, falling back to src", e);
+    console.warn("Interactive load failed, falling back to src", e);
+    iframe.removeAttribute('srcdoc');
     iframe.src = url;
   }
 }
