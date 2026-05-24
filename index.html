@@ -3109,31 +3109,26 @@ async function handleSocialMediaUpload(input){
   };
   reader.readAsDataURL(file);
 
-  const storedCloud = localStorage.getItem('cloudinary_cloud');
-  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
-  const storedPreset = localStorage.getItem('cloudinary_preset');
-  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
-
-  toast('Uploading media to Cloudinary...','info');
-
-  const formData=new FormData();
-  formData.append('file',file);
-  formData.append('upload_preset',uploadPreset);
+  toast('Uploading media to Supabase Storage...','info');
 
   try {
-    const resourceType=file.type.startsWith('video/')?'video':'image';
-    const response=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,{
-      method:'POST',
-      body:formData
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `social/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { error: uploadError } = await customSb.storage.from('website_media').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
     });
 
-    if(!response.ok){
-      const err=await response.json();
-      throw new Error(err.error?.message||'Upload failed');
+    if(uploadError){
+      throw new Error(uploadError.message || 'Upload failed');
     }
 
-    const data=await response.json();
-    const url=data.secure_url;
+    const { data: { publicUrl } } = customSb.storage.from('website_media').getPublicUrl(fileName);
+    const url = publicUrl;
 
     const urlInput = document.getElementById('social-media-url');
     if(urlInput) urlInput.value = url;
@@ -3157,30 +3152,26 @@ async function handleSocialMediaUpload(input){
 async function handleClubLogoUpload(input){
   const file=input.files[0];
   if(!file)return;
-  const storedCloud = localStorage.getItem('cloudinary_cloud');
-  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
-  const storedPreset = localStorage.getItem('cloudinary_preset');
-  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
-
-  toast('Uploading logo to Cloudinary...','info');
-
-  const formData=new FormData();
-  formData.append('file',file);
-  formData.append('upload_preset',uploadPreset);
+  toast('Uploading logo to Supabase Storage...','info');
 
   try {
-    const response=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,{
-      method:'POST',
-      body:formData
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `logos/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { error: uploadError } = await customSb.storage.from('website_media').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
     });
 
-    if(!response.ok){
-      const err=await response.json();
-      throw new Error(err.error?.message||'Upload failed');
+    if(uploadError){
+      throw new Error(uploadError.message || 'Upload failed');
     }
 
-    const data=await response.json();
-    document.getElementById('club-logo').value = data.secure_url;
+    const { data: { publicUrl } } = customSb.storage.from('website_media').getPublicUrl(fileName);
+    document.getElementById('club-logo').value = publicUrl;
     toast('Club logo uploaded successfully ✓','success');
   } catch(err){
     console.error('Upload error:',err);
@@ -4598,39 +4589,26 @@ async function handleMediaUpload(input,type){
   };
   reader.readAsDataURL(file);
 
-  const storedCloud = localStorage.getItem('cloudinary_cloud');
-  const cloudName = (storedCloud && storedCloud.trim() !== '') ? storedCloud.trim() : 'daj1lyfgk';
-  const storedPreset = localStorage.getItem('cloudinary_preset');
-  const uploadPreset = (storedPreset && storedPreset.trim() !== '') ? storedPreset.trim() : 'ibizamivida_uploads';
-
-  if(!cloudName){
-    toast('Cloud Name not set under Settings. Showing local preview.','warning');
-    return;
-  }
-
-  toast('Uploading to Cloudinary...','info');
-
-  const formData=new FormData();
-  formData.append('file',file);
-  formData.append('upload_preset',uploadPreset);
+  toast('Uploading to Supabase Storage...','info');
 
   try {
-    const resourceType=file.type.startsWith('video/')?'video':'image';
-    const response=await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,{
-      method:'POST',
-      body:formData
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${type}s/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { error: uploadError } = await customSb.storage.from('website_media').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
     });
 
-    if(!response.ok){
-      const err=await response.json();
-      throw new Error(err.error?.message||'Upload failed');
+    if(uploadError){
+      throw new Error(uploadError.message || 'Upload failed');
     }
 
-    const data=await response.json();
-    let url=data.secure_url;
-    if(url && url.endsWith('.pdf')) {
-      url = url.replace('.pdf', '.png');
-    }
+    const { data: { publicUrl } } = customSb.storage.from('website_media').getPublicUrl(fileName);
+    let url = publicUrl;
 
     addToMediaHistory(url);
 
