@@ -498,7 +498,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 <body>
 
 <div id="loading">
-  <img class="brand-logo-img" src="logo.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
+  <img class="brand-logo-img" src="/logo-clean.png" style="width:120px;height:120px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
   <div class="logo-load" style="margin-top:0.5rem">Ibiza Mi Vida</div>
   <div class="sub-load">CMS — Loading</div>
   <div class="spinner"></div>
@@ -509,7 +509,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
   <!-- SIDEBAR -->
   <nav id="sidebar">
     <div class="sidebar-logo" style="display:flex;align-items:center;gap:0.75rem;padding:1rem">
-      <img class="brand-logo-img" src="logo.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
+      <img class="brand-logo-img" src="/logo-clean.png" style="width:42px;height:42px;border-radius:50%;object-fit:contain;border:1px solid var(--gold);filter:brightness(0) invert(1);" alt="Ibiza Mi Vida">
       <div>
         <div class="brand" style="font-weight:600">Ibiza Mi Vida</div>
         <div class="tagline">CMS Platform</div>
@@ -825,141 +825,106 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
       <!-- ══════════════ PROMOTER EDITOR ══════════════ -->
       <div class="page" id="page-promoter">
         <div class="page-header" style="margin-bottom:1rem">
-          <div class="page-title">Live Website Editor</div>
-          <div class="page-sub">Klik in de preview of gebruik het menu om tekst, afbeeldingen of kleuren direct aan te passen! Zelfs een kind van vijf kan dit.</div>
+          <div class="page-title" data-i18n="promo.title">Deals of the Day & Content Planner</div>
+          <div class="page-sub" data-i18n="promo.sub">Manage daily and weekly schedules. Upload content, parse PDFs, and push live. Design is handled automatically.</div>
         </div>
         
         <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;background:var(--bg3);padding:0.75rem 1.25rem;border-radius:8px;border:1px solid var(--border);flex-wrap:wrap">
           <div>
-            <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Geselecteerde Pagina</div>
-            <select id="promoter-category-select" style="font-weight:600;font-size:1.1rem;border:none;background:transparent;color:var(--gold);outline:none;cursor:pointer" onchange="setPromoterTab(this.value)">
-              <option value="homepage">Homepage</option>
-              <option value="deals-of-the-day">Deals of the Day</option>
-              <option value="boat-charter">Private Boat Charters</option>
-              <option value="club-ticket">Club Tickets</option>
-              <option value="boat-party">Boat Parties</option>
-              <option value="catamaran">VIP Catamaran</option>
-              <option value="formentera">Formentera Trips</option>
-              <option value="guestlist">Guestlist</option>
-              <option value="drink-packages">Drink Packages</option>
-              <option value="car-rental">Car & Scooter Rental</option>
-              <option value="about">About</option>
-              <option value="blog">Blog (EN/ES/NL)</option>
-              <option value="newsfeed">Newsfeed (EN/ES/NL)</option>
-              <option value="ibiza-news">Ibiza News Region (EN/ES/NL)</option>
-            </select>
+            <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em" data-i18n="promo.select_date">Selecteer Datum / Week</div>
+            <input type="date" id="promoter-date-select" style="font-weight:600;font-size:1.1rem;border:none;background:transparent;color:var(--gold);outline:none;cursor:pointer;padding:0;min-height:auto" onchange="loadDealsForDate(this.value)">
           </div>
           <div style="flex:1"></div>
           <div style="display:flex;gap:0.5rem">
-            <button class="btn btn-secondary" onclick="savePageContent(false)" style="padding:0.75rem 1.5rem;font-size:1rem;font-weight:bold">Tussentijds Bewaren 💾</button>
-            <button class="btn btn-primary" onclick="pushAllToWebsite()" style="background:var(--success);border-color:var(--success);color:#fff;padding:0.75rem 1.5rem;font-size:1rem;font-weight:bold">Naar de website (Push) 🚀</button>
+            <button class="btn btn-secondary" onclick="saveDealsDraft()" style="padding:0.75rem 1.5rem;font-size:1rem;font-weight:bold" data-i18n="promo.save_draft">Tussentijds Bewaren 💾</button>
+            <button class="btn btn-primary" onclick="pushDealsToWebsite()" style="background:var(--success);border-color:var(--success);color:#fff;padding:0.75rem 1.5rem;font-size:1rem;font-weight:bold" data-i18n="promo.push">Naar de website (Push) 🚀</button>
           </div>
         </div>
 
-        <div class="grid-2-cols" style="grid-template-columns: 350px 1fr; gap:1.5rem; align-items: start;">
+        <div class="grid-2-cols" style="grid-template-columns: 400px 1fr; gap:1.5rem; align-items: start;">
           
-          <!-- LEFT: SIMPLE EDITOR BLOCKS -->
+          <!-- LEFT: CONTENT PLANNER -->
           <div style="display:flex;flex-direction:column;gap:1rem;height:calc(100vh - 220px);overflow-y:auto;padding-right:0.5rem" id="promoter-page-editor-form">
             
-            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-hero">
-              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">1. Hero (Bovenkant)</div>
+            <!-- SMART PDF EXTRACTOR -->
+            <div class="card" style="border-left:4px solid var(--accent);padding:1.25rem;">
+              <div style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem" data-i18n="promo.pdf_title">1. Smart PDF Extractor</div>
+              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem" data-i18n="promo.pdf_sub">Upload a PDF containing prices and deals. The system will automatically parse the contents.</div>
+              <div class="img-upload-box" style="padding:1.5rem 1rem;min-height:auto;border-style:dashed;border-color:var(--accent)" onclick="document.getElementById('pdf-deal-upload').click()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem;color:var(--accent)"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                <div data-i18n="promo.pdf_btn">Drop PDF Here / Click to Upload</div>
+              </div>
+              <input type="file" id="pdf-deal-upload" accept=".pdf" style="display:none" onchange="alert('PDF Extractor (AI) triggered! Processing deals...')">
+            </div>
+
+            <!-- DEAL OF THE DAY -->
+            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;">
+              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem" data-i18n="promo.deal_title">2. Deal of the Day (Hoofddeal)</div>
               
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Grote Titel</label>
-                <input type="text" id="page-hero-title" value="Experience the Real Ibiza" oninput="previewPage()" style="font-size:1rem;padding:0.6rem">
+                <label data-i18n="promo.deal_cat">Category</label>
+                <select id="deal-category" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem">
+                  <option value="club-ticket">Club Tickets</option>
+                  <option value="boat-party">Boat Parties</option>
+                  <option value="boat-charter">Private Boat Charters</option>
+                  <option value="drink-packages">Drink Packages</option>
+                  <option value="catamaran">VIP Catamaran</option>
+                </select>
+              </div>
+
+              <!-- Multilingual Titles -->
+              <div class="form-group" style="margin-bottom:0.75rem">
+                <label data-i18n="promo.deal_title_en">Title (EN)</label>
+                <input type="text" id="deal-title-en" placeholder="e.g. VIP Boat Party Special">
+              </div>
+              <div class="form-group" style="margin-bottom:0.75rem">
+                <label data-i18n="promo.deal_title_nl">Title (NL)</label>
+                <input type="text" id="deal-title-nl" placeholder="bijv. VIP Bootfeest Special">
               </div>
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Ondertitel</label>
-                <input type="text" id="page-hero-sub" value="Your ultimate guide to Ibiza nightlife, boat parties & more" oninput="previewPage()">
+                <label data-i18n="promo.deal_title_es">Title (ES)</label>
+                <input type="text" id="deal-title-es" placeholder="ej. Especial Fiesta en Barco VIP">
               </div>
+
+              <div class="form-group" style="margin-bottom:1rem">
+                <label data-i18n="promo.deal_price">Price (€)</label>
+                <input type="number" id="deal-price" placeholder="89.00">
+              </div>
+
               <div class="form-group">
-                <label>Achtergrondfoto / Video</label>
-                <div class="img-upload-box" style="padding:1rem;min-height:auto" onclick="document.getElementById('hero-img-upload').click()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  <div>Klik om te uploaden</div>
+                <label data-i18n="promo.deal_img">Deal Image</label>
+                <div class="img-upload-box" style="padding:1rem;min-height:auto" onclick="document.getElementById('deal-img-upload').click()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <div data-i18n="promo.deal_img_btn">Upload Image</div>
                 </div>
-                <input type="file" id="hero-img-upload" accept="image/*,video/*" style="display:none" onchange="handleMediaUpload(this,'hero')">
-                <div id="hero-preview" style="margin-top:0.5rem"></div>
+                <input type="file" id="deal-img-upload" accept="image/*" style="display:none">
               </div>
             </div>
 
-            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-content">
-              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">2. Pagina Tekst</div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <div class="editor-area" id="page-description" contenteditable="true" oninput="previewPage()" style="min-height:120px;font-size:0.9rem">
-                  Discover the best of Ibiza with Ibiza Mi Vida. From legendary club nights at Amnesia and Pacha to private yacht charters and day trips to Formentera — we bring you the full Ibiza experience.
-                </div>
-              </div>
-            </div>
-
-            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-theme">
-              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">3. Kleuren & Vormgeving</div>
+            <!-- WEEK SCHEDULE -->
+            <div class="card" style="border-left:4px solid var(--success);padding:1.25rem;">
+              <div style="font-size:1rem;font-weight:700;color:var(--success);margin-bottom:1rem" data-i18n="promo.week_title">3. Deal of the Week (Overzicht)</div>
+              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem" data-i18n="promo.week_sub">Manage the bulk events shown for the rest of the week below the daily deal.</div>
               
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Achtergrond Kleur (Website)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-bg-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
-                  <input type="text" id="theme-color-bg-hex-promoter" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
-                </div>
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Lettertype (Font)</label>
-                <select id="theme-font-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
-                  <option value="Quicksand">Quicksand (Default Sleek)</option>
-                  <option value="Montserrat">Montserrat (Modern Bold)</option>
-                  <option value="Inter">Inter (Clean Neutral)</option>
-                  <option value="Outfit">Outfit (Premium Rounded)</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Lettergrootte (Base Size)</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="range" id="theme-font-size-promoter" min="12" max="24" value="16" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('font-size-val').textContent=this.value+'px'; document.documentElement.style.setProperty('--font-size', this.value+'px')">
-                  <span id="font-size-val" style="font-size:0.8rem;color:var(--gold);font-weight:600;min-width:40px">16px</span>
-                </div>
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Logo Kleur</label>
-                <select id="theme-logo-filter-visible" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="document.getElementById('theme-logo-filter-promoter').value=this.value; previewLogoFilter(this.value)">
-                  <option value="none">Originele Kleur</option>
-                  <option value="brightness(0) invert(1)">Wit (White)</option>
-                  <option value="brightness(0)">Zwart (Black)</option>
-                </select>
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Tekst Kleur</label>
-                <div style="display:flex;gap:0.5rem;align-items:center">
-                  <input type="color" id="theme-color-text-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
-                  <input type="text" id="theme-color-text-hex-promoter" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Logo Upload</label>
-                <div class="img-upload-box" style="padding:1rem;min-height:auto" onclick="document.getElementById('logo-upload').click()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <div style="margin-top:0.4rem">Klik om logo te wijzigen</div>
-                </div>
-                <input type="file" id="logo-upload" accept="image/*,.svg" style="display:none" onchange="handleMediaUpload(this,'logo')">
-              </div>
+              <button class="btn btn-secondary w-full" style="justify-content:center" onclick="alert('Opening Week Scheduler...')" data-i18n="promo.week_btn">+ Add Weekly Event</button>
             </div>
             
-            <div class="card" style="border-left:4px solid var(--accent);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-social">
-              <div style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem">4. Deal of the Day / Socials</div>
-              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem">Push acties direct naar Instagram & TikTok</div>
-              <div style="display:flex;gap:0.5rem;flex-direction:column">
-                <button class="btn btn-secondary" onclick="pushDealToInstagram()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Push to Instagram</button>
-                <button class="btn btn-secondary" onclick="pushDealToTikTok()" style="background:#111;color:#fff;border-color:#111;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-8-8v12a4 4 0 1 1-5-5z"/></svg> Push to TikTok</button>
-              </div>
-            </div>
-
-            <!-- Hidden legacy elements to avoid breaking JS -->
+            <!-- Hidden legacy elements to avoid breaking old JS references if any exist -->
             <div style="display:none">
-              <input type="text" id="page-cta" value="Explore Events">
+              <input type="text" id="page-hero-title">
+              <input type="text" id="page-hero-sub">
+              <div id="page-description"></div>
+              <input type="color" id="theme-color-bg-promoter">
+              <input type="color" id="theme-color-text-promoter">
+              <select id="theme-font-promoter"><option></option></select>
+              <select id="theme-logo-filter-visible"><option></option></select>
+              <input type="text" id="page-cta">
               <input type="text" id="theme-logo-url-promoter">
               <select id="theme-logo-filter-promoter"><option value="none"></option></select>
               <input type="text" id="theme-color-gold-hex-promoter">
               <input type="text" id="theme-color-accent-hex-promoter">
             </div>
+
             
           </div>
 
