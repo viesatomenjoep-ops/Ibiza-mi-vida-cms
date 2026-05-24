@@ -980,13 +980,6 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             
             <div id="preview-wrap" style="flex:1;position:relative;overflow:hidden;background:#fff">
               
-              <!-- Click Overlay Zones to simulate WYSIWYG editing -->
-              <div style="position:absolute;inset:0;z-index:10;pointer-events:none;display:flex;flex-direction:column">
-                <div style="height:80px;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-theme').scrollIntoView({behavior:'smooth'});document.getElementById('logo-upload').click()" title="Klik om Logo aan te passen"></div>
-                <div style="height:350px;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-hero').scrollIntoView({behavior:'smooth'});document.getElementById('page-hero-title').focus()" title="Klik om Tekst / Foto aan te passen"></div>
-                <div style="flex:1;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-content').scrollIntoView({behavior:'smooth'});document.getElementById('page-description').focus()" title="Klik om Content aan te passen"></div>
-              </div>
-
               <!-- Live preview iframe -->
               <iframe id="webpage-preview" style="width:100%;height:100%;border:none" title="Page preview" src="https://ibiza-mi-vida-website11.vercel.app/"></iframe>
             </div>
@@ -4360,14 +4353,14 @@ function refreshPreview(){
   const sub   = document.getElementById('page-hero-sub').value   || '';
   const heroImg = document.getElementById('hero-preview')?.querySelector('img')?.src || '';
 
-  let liveUrl = info.url.replace('ibizamivida.com', 'https://ibiza-mi-vida-website-ywot.vercel.app');
+  let liveUrl = info.url.replace('ibizamivida.com', 'https://ibiza-mi-vida-website11.vercel.app');
   
   if (tab === 'theme' || tab === 'domains') {
-    liveUrl = 'https://ibiza-mi-vida-website-ywot.vercel.app';
+    liveUrl = 'https://ibiza-mi-vida-website11.vercel.app';
     const labelEl = document.getElementById('preview-section-label');
     const urlEl = document.getElementById('preview-url-bar');
     if (labelEl) labelEl.textContent = tab === 'theme' ? 'Vormgeving (Live)' : 'Domeinen (Live)';
-    if (urlEl) urlEl.textContent = 'ibiza-mi-vida-website-ywot.vercel.app';
+    if (urlEl) urlEl.textContent = 'ibiza-mi-vida-website11.vercel.app';
   } else {
     const labelEl = document.getElementById('preview-section-label');
     const urlEl = document.getElementById('preview-url-bar');
