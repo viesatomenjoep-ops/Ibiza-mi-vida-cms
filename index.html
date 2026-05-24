@@ -862,18 +862,19 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem" data-i18n="promo.deal_title">2. Deal of the Day (Hoofddeal)</div>
               
               <div class="form-group" style="margin-bottom:1rem">
-                <label data-i18n="promo.deal_cat">Category</label>
-                <select id="deal-category" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem">
-                  <option value="deals-of-the-day">Deals of the Day</option>
-                  <option value="boat-charter">Private Boat Charters</option>
-                  <option value="club-ticket">Club Tickets</option>
-                  <option value="boat-party">Boat Parties</option>
-                  <option value="catamaran">VIP Catamaran</option>
-                  <option value="formentera">Formentera Trips</option>
-                  <option value="guestlist">Guestlist</option>
-                  <option value="drink-packages">Drink Packages</option>
-                  <option value="car-rental">Car & Scooter Rental</option>
-                </select>
+                <label data-i18n="promo.deal_cat" style="color:var(--text);font-weight:600;display:block;margin-bottom:0.5rem">Activeer Categorieën (Aggregator)</label>
+                <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.75rem">Vink aan welke categorieën je op de Deals of the Day pagina wilt tonen voor deze datum.</div>
+                <div id="deal-category-checkboxes" style="display:grid; grid-template-columns: 1fr 1fr; gap:0.5rem; background:var(--bg3); padding:0.75rem; border-radius:6px; border:1px solid var(--border)">
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="deals-of-the-day" onchange="sendPreviewUpdate()" checked> Deals of the Day</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="boat-charter" onchange="sendPreviewUpdate()"> Boat Charters</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="club-ticket" onchange="sendPreviewUpdate()" checked> Club Tickets</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="boat-party" onchange="sendPreviewUpdate()"> Boat Parties</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="catamaran" onchange="sendPreviewUpdate()"> VIP Catamaran</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="formentera" onchange="sendPreviewUpdate()"> Formentera</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="guestlist" onchange="sendPreviewUpdate()"> Guestlist</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="drink-packages" onchange="sendPreviewUpdate()"> Drink Packages</label>
+                  <label style="display:flex;align-items:center;gap:0.5rem;font-size:0.85rem;cursor:pointer"><input type="checkbox" value="car-rental" onchange="sendPreviewUpdate()"> Car & Scooter</label>
+                </div>
               </div>
 
               <!-- SEARCH PRESET -->
@@ -975,12 +976,17 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             </div>
             
             <script>
+              function getActiveCategories() {
+                const boxes = document.querySelectorAll('#deal-category-checkboxes input[type="checkbox"]:checked');
+                return Array.from(boxes).map(b => b.value);
+              }
+
               function sendPreviewUpdate() {
                 const iframe = document.getElementById('webpage-preview');
                 if (!iframe || !iframe.contentWindow) return;
                 const dealData = {
                   type: 'ADMIN_PREVIEW_UPDATE',
-                  category: document.getElementById('deal-category')?.value || 'deals-of-the-day',
+                  active_categories: getActiveCategories(),
                   title_en: document.getElementById('deal-title-en')?.value || '',
                   title_nl: document.getElementById('deal-title-nl')?.value || '',
                   title_es: document.getElementById('deal-title-es')?.value || '',
@@ -990,8 +996,7 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 iframe.contentWindow.postMessage(dealData, '*');
               }
               
-              // Automatically send update when category changes
-              document.getElementById('deal-category').addEventListener('change', sendPreviewUpdate);
+              // Automatically send update when date changes
               document.getElementById('promoter-date-select').addEventListener('change', sendPreviewUpdate);
 
               // ---------------------------------------------------------
@@ -1025,7 +1030,10 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
               function applyPreset(titleEn) {
                 const preset = PROMOTER_PRESETS.find(p => p.title_en === titleEn);
                 if(preset) {
-                  document.getElementById('deal-category').value = preset.category;
+                  // Ensure the preset's category is checked
+                  const checkbox = document.querySelector(`#deal-category-checkboxes input[value="${preset.category}"]`);
+                  if (checkbox) checkbox.checked = true;
+
                   document.getElementById('deal-title-en').value = preset.title_en;
                   document.getElementById('deal-title-nl').value = preset.title_nl;
                   document.getElementById('deal-title-es').value = preset.title_es;
