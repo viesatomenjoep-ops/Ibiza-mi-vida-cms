@@ -4352,6 +4352,85 @@ async function savePageContent(){
   }
 }
 
+
+async function loadInteractivePreview(url) {
+  const iframe = document.getElementById('webpage-preview');
+  iframe.removeAttribute('src');
+  iframe.srcdoc = "<html><body style='font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#f9f9f9;color:#999;font-size:14px'><div>Loading interactive editor...</div></body></html>";
+  
+  try {
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+    const response = await fetch(proxyUrl);
+    const data = await response.json();
+    let html = data.contents;
+    
+    // Inject base tag for assets
+    html = html.replace('<head>', `<head><base href="${url}">`);
+    
+    // Inject custom click-hijacker
+    const script = `
+      <script>
+        document.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          let target = e.target;
+          let text = target.innerText || target.textContent;
+          let isImg = target.tagName.toLowerCase() === 'img';
+          let imgSrc = isImg ? target.src : null;
+          let bgImg = window.getComputedStyle(target).backgroundImage;
+          if(bgImg && bgImg !== 'none') {
+            isImg = true;
+            imgSrc = bgImg.replace('url("','').replace('")','');
+          }
+          window.parent.postMessage({
+            type: 'EDITOR_CLICK',
+            tag: target.tagName,
+            text: text,
+            isImage: isImg,
+            src: imgSrc
+          }, '*');
+          let oldOutline = target.style.outline;
+          target.style.outline = '3px solid #D4AF37';
+          target.style.outlineOffset = '-3px';
+          setTimeout(() => target.style.outline = oldOutline, 1500);
+        }, true);
+      </script>
+    `;
+    html = html.replace('</body>', `${script}</body>`);
+    iframe.srcdoc = html;
+  } catch(e) {
+    console.error("Interactive load failed, falling back to src", e);
+    iframe.src = url;
+  }
+}
+
+// Add message listener for iframe clicks
+window.addEventListener('message', function(event) {
+  if (event.data && event.data.type === 'EDITOR_CLICK') {
+    const data = event.data;
+    if (data.isImage) {
+      document.getElementById('editor-block-hero').scrollIntoView({behavior:'smooth'});
+      toast('Afbeelding geselecteerd in viewer!', 'info');
+      const box = document.getElementById('hero-img-upload').parentElement;
+      box.style.border = '2px dashed var(--gold)';
+      setTimeout(() => box.style.border = '', 2000);
+    } else {
+      if (data.tag.includes('H') || (data.text && data.text.length < 50)) {
+        document.getElementById('editor-block-hero').scrollIntoView({behavior:'smooth'});
+        const titleField = document.getElementById('page-hero-title');
+        titleField.focus();
+        if(data.text && data.text.trim().length > 3) titleField.value = data.text.trim();
+        toast('Titel geselecteerd in viewer!', 'info');
+      } else {
+        document.getElementById('editor-block-content').scrollIntoView({behavior:'smooth'});
+        const descField = document.getElementById('page-description');
+        descField.focus();
+        toast('Tekstvak geselecteerd in viewer!', 'info');
+      }
+    }
+  }
+});
+
 function refreshPreview(){
   const tab   = currentPromoterTab;
   const info  = PROMOTER_PAGES[tab] || {label:tab, url:'ibizamivida.com'};
@@ -4377,13 +4456,12 @@ function refreshPreview(){
   const iframe = document.getElementById('webpage-preview');
   if(iframe) {
     iframe.removeAttribute('srcdoc');
-    // Prevent constant reloading on every keystroke by checking if it needs an initial load, 
-    // or if the user clicked the 'Refresh' button manually.
-    if (iframe.src !== liveUrl && !iframe.src.includes(liveUrl)) {
-      iframe.src = liveUrl;
-    } else if (event && event.type === 'click' && event.target.innerText.includes('Refresh')) {
-      // Force reload if refresh button clicked
-      iframe.src = liveUrl;
+    // We load via our proxy so we can inject click listeners
+    if (!iframe.getAttribute('data-loaded-url') || iframe.getAttribute('data-loaded-url') !== liveUrl) {
+      iframe.setAttribute('data-loaded-url', liveUrl);
+      loadInteractivePreview(liveUrl);
+    } else if (event && event.type === 'click' && event.target.innerText.includes('↻')) {
+      loadInteractivePreview(liveUrl);
     }
   }
 
