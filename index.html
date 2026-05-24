@@ -826,310 +826,149 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
 
       <!-- ══════════════ PROMOTER EDITOR ══════════════ -->
       <div class="page" id="page-promoter">
-        <div class="page-header">
-          <div class="page-title" data-i18n="prom.title">Website & Homepage Editor</div>
-          <div class="page-sub" data-i18n="prom.sub">Beheer paginateksten, Deal of the Day, vormgeving, kleuren en logo's live in één sectie</div>
+        <div class="page-header" style="margin-bottom:1rem">
+          <div class="page-title">Live Website Editor</div>
+          <div class="page-sub">Klik in de preview of gebruik het menu om tekst, afbeeldingen of kleuren direct aan te passen! Zelfs een kind van vijf kan dit.</div>
         </div>
-        <div class="tab-bar" style="overflow-x:auto">
-          <button class="tab active" onclick="setPromoterTab('homepage')">Homepage</button>
-          <button class="tab" onclick="setPromoterTab('club-ticket')">Club Tickets</button>
-          <button class="tab" onclick="setPromoterTab('boat-party')">Boat Party</button>
-          <button class="tab" onclick="setPromoterTab('private-boat')">Private Boats</button>
-          <button class="tab" onclick="setPromoterTab('drink-package')">Drink Packages</button>
-          <button class="tab" onclick="setPromoterTab('guestlist')">Guestlist</button>
-          <button class="tab" onclick="setPromoterTab('vip-catamaran')">VIP Catamaran</button>
-          <button class="tab" onclick="setPromoterTab('formentera-boat')">Formentera Boat</button>
-          <button class="tab" onclick="setPromoterTab('aftersun')">Aftersun</button>
-          <button class="tab" onclick="setPromoterTab('free-discount')">Free / Discount</button>
-          <button class="tab" onclick="setPromoterTab('ibiza-tips')">Ibiza Tips</button>
-          <button class="tab" onclick="setPromoterTab('car-scooter')">Car and Scooter</button>
-          <button class="tab" onclick="setPromoterTab('about')">About</button>
-          <button class="tab" onclick="setPromoterTab('theme')">🎨 Vormgeving & Logo</button>
-          <button class="tab" onclick="setPromoterTab('domains')">🌐 Domeinen & Deploy</button>
+        
+        <div style="display:flex;gap:1rem;margin-bottom:1.5rem;align-items:center;background:var(--bg3);padding:0.75rem 1.25rem;border-radius:8px;border:1px solid var(--border);flex-wrap:wrap">
+          <div>
+            <div style="font-size:0.75rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">Geselecteerde Pagina</div>
+            <select id="promoter-category-select" style="font-weight:600;font-size:1.1rem;border:none;background:transparent;color:var(--gold);outline:none;cursor:pointer" onchange="setPromoterTab(this.value)">
+              <option value="homepage">Homepage</option>
+              <option value="club-ticket">Club Tickets</option>
+              <option value="boat-party">Boat Party</option>
+              <option value="private-boat">Private Boats</option>
+              <option value="drink-package">Drink Packages</option>
+              <option value="guestlist">Guestlist</option>
+              <option value="vip-catamaran">VIP Catamaran</option>
+              <option value="formentera-boat">Formentera Boat</option>
+              <option value="aftersun">Aftersun</option>
+              <option value="free-discount">Free / Discount</option>
+              <option value="ibiza-tips">Ibiza Tips</option>
+              <option value="car-scooter">Car and Scooter</option>
+              <option value="about">About</option>
+            </select>
+          </div>
+          <div style="flex:1"></div>
+          <div style="display:flex;gap:0.5rem">
+            <button class="btn btn-primary" onclick="pushAllToWebsite()" style="background:var(--success);border-color:var(--success);color:#fff;padding:0.75rem 1.5rem;font-size:1rem;font-weight:bold">Naar de website (Save & Push) 🚀</button>
+          </div>
         </div>
-        <div style="margin-bottom:1.5rem">
-          <div style="font-size:0.75rem;color:var(--text3);margin-bottom:0.25rem;text-transform:uppercase;letter-spacing:0.05em;padding-left:2px">Selecteer een Categorie</div>
-          <select id="promoter-category-select" style="width:100%;font-weight:600;font-size:1rem;border:2px solid var(--gold);color:var(--text);background:var(--bg2);padding:0.75rem;border-radius:8px;cursor:pointer" onchange="setPromoterTab(this.value)">
-            <option value="homepage">Homepage</option>
-            <option value="club-ticket">Club Tickets</option>
-            <option value="boat-party">Boat Party</option>
-            <option value="private-boat">Private Boats</option>
-            <option value="drink-package">Drink Packages</option>
-            <option value="guestlist">Guestlist</option>
-            <option value="vip-catamaran">VIP Catamaran</option>
-            <option value="formentera-boat">Formentera Boat</option>
-            <option value="aftersun">Aftersun</option>
-            <option value="free-discount">Free / Discount</option>
-            <option value="ibiza-tips">Ibiza Tips</option>
-            <option value="car-scooter">Car and Scooter</option>
-            <option value="about">About</option>
-            <option value="theme">🎨 Vormgeving & Logo</option>
-            <option value="domains">🌐 Domeinen & Deploy</option>
-          </select>
-        </div>
-        <div id="promoter-content">
-          <div id="promoter-page-editor-form">
-          <!-- Deal of the Day banner -->
-          <div class="card" style="margin-bottom:1rem;border-left:3px solid var(--gold);border-radius:0 10px 10px 0">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
-              <div>
-                <div style="font-size:0.85rem;font-weight:600;color:var(--gold)">Deal of the Day</div>
-                <div style="font-size:0.75rem;color:var(--text3);margin-top:2px">Push daily promotions to every category page on the website</div>
+
+        <div class="grid-2-cols" style="grid-template-columns: 350px 1fr; gap:1.5rem; align-items: start;">
+          
+          <!-- LEFT: SIMPLE EDITOR BLOCKS -->
+          <div style="display:flex;flex-direction:column;gap:1rem;height:calc(100vh - 220px);overflow-y:auto;padding-right:0.5rem" id="promoter-page-editor-form">
+            
+            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-hero">
+              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">1. Hero (Bovenkant)</div>
+              
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Grote Titel</label>
+                <input type="text" id="page-hero-title" value="Experience the Real Ibiza" oninput="previewPage()" style="font-size:1rem;padding:0.6rem">
               </div>
-              <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-                <input type="date" id="deal-date" style="width:150px;font-size:0.8rem" onchange="loadDayDeals()">
-                <button class="btn btn-primary btn-sm" onclick="pushDealToWebsite()">Push to Website</button>
-                <button class="btn btn-secondary btn-sm" onclick="pushDealToInstagram()">Push to Instagram</button>
-                <button class="btn btn-secondary btn-sm" onclick="pushDealToTikTok()" style="background:#111;color:#fff;border-color:#111;">Push to TikTok</button>
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Ondertitel</label>
+                <input type="text" id="page-hero-sub" value="Your ultimate guide to Ibiza nightlife, boat parties & more" oninput="previewPage()">
+              </div>
+              <div class="form-group">
+                <label>Achtergrondfoto / Video</label>
+                <div class="img-upload-box" style="padding:1rem;min-height:auto" onclick="document.getElementById('hero-img-upload').click()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <div>Klik om te uploaden</div>
+                </div>
+                <input type="file" id="hero-img-upload" accept="image/*,video/*" style="display:none" onchange="handleMediaUpload(this,'hero')">
+                <div id="hero-preview" style="margin-top:0.5rem"></div>
               </div>
             </div>
-            <div id="deal-preview-area" style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem"></div>
-          </div>
-          <div class="grid-2-cols">
-            <div>
+
+            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-content">
+              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">2. Pagina Tekst</div>
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Page Hero Title</label>
-                <input type="text" id="page-hero-title" value="Experience the Real Ibiza" placeholder="Hero headline…">
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Hero Subtitle</label>
-                <input type="text" id="page-hero-sub" value="Your ultimate guide to Ibiza nightlife, boat parties & more" placeholder="Subtitle…">
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>Page Description (SEO + Body)</label>
-                <div class="editor-toolbar">
-                  <button class="editor-btn" onclick="execCmd('bold')"><b>B</b></button>
-                  <button class="editor-btn" onclick="execCmd('italic')"><i>I</i></button>
-                  <button class="editor-btn" onclick="execCmd('underline')"><u>U</u></button>
-                  <button class="editor-btn" onclick="execCmd('insertUnorderedList')">• List</button>
-                  <button class="editor-btn" onclick="execCmd('insertOrderedList')">1. List</button>
-                  <button class="editor-btn" onclick="execCmd('removeFormat')">Clear</button>
-                </div>
-                <div class="editor-area" id="page-description" contenteditable="true">
+                <div class="editor-area" id="page-description" contenteditable="true" oninput="previewPage()" style="min-height:120px;font-size:0.9rem">
                   Discover the best of Ibiza with Ibiza Mi Vida. From legendary club nights at Amnesia and Pacha to private yacht charters and day trips to Formentera — we bring you the full Ibiza experience.
                 </div>
               </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <label>CTA Button Text</label>
-                <input type="text" value="Explore Events" id="page-cta">
-              </div>
-              <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem">
-                <button class="btn btn-primary" onclick="savePageContent()" data-i18n="prom.save">Save to Supabase</button>
-                <button class="btn btn-secondary" onclick="previewPage()" data-i18n="prom.preview">Preview</button>
-              </div>
             </div>
-            <div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <label style="margin:0">Hero Image / Banner</label>
-                  <span onclick="clearMedia('hero')" style="cursor:pointer;color:var(--danger);font-size:0.75rem">❌ Verwijderen</span>
-                </div>
-                <div class="img-upload-box" data-droptype="hero" onclick="document.getElementById('hero-img-upload').click()">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                  <div>Click to upload image (4K supported)</div>
-                  <div style="font-size:0.7rem;margin-top:4px;color:var(--text3)">JPG, PNG, WebP, MP4 · Max 50MB</div>
-                </div>
-                <input type="file" id="hero-img-upload" accept="image/*,video/*,.pdf" style="display:none" onchange="handleMediaUpload(this,'hero')">
-                <div id="hero-preview"></div>
-              </div>
-              <div class="form-group" style="margin-bottom:1rem">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-                  <label style="margin:0">Logo Upload (Cloudinary)</label>
-                  <span onclick="clearMedia('logo')" style="cursor:pointer;color:var(--danger);font-size:0.75rem">❌ Verwijderen</span>
-                </div>
-                <div class="img-upload-box" data-droptype="logo" onclick="document.getElementById('logo-upload').click()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                  <div style="margin-top:0.4rem">Upload Logo (SVG / PNG)</div>
-                </div>
-                <input type="file" id="logo-upload" accept="image/*,.svg,.pdf" style="display:none" onchange="handleMediaUpload(this,'logo')">
-              </div>
 
+            <div class="card" style="border-left:4px solid var(--gold);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-theme">
+              <div style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:1rem">3. Kleuren & Vormgeving</div>
+              
               <div class="form-group" style="margin-bottom:1rem">
-                <label>Media History (Laatst geüpload)</label>
-                <div id="media-history-container" style="display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.5rem">
-                  <div style="font-size:0.8rem;color:var(--text3)">Nog geen history beschikbaar.</div>
+                <label>Achtergrond Kleur (Website)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-bg-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
+                  <input type="text" id="theme-color-bg-hex-promoter" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Tekst Kleur</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="color" id="theme-color-text-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
+                  <input type="text" id="theme-color-text-hex-promoter" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
                 </div>
               </div>
               <div class="form-group">
-                <label>Extract from PDF</label>
-                <div class="img-upload-box" onclick="document.getElementById('pdf-upload').click()">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                  <div style="margin-top:0.4rem">Upload PDF — extract images + text</div>
+                <label>Logo Upload</label>
+                <div class="img-upload-box" style="padding:1rem;min-height:auto" onclick="document.getElementById('logo-upload').click()">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  <div style="margin-top:0.4rem">Klik om logo te wijzigen</div>
                 </div>
-                <input type="file" id="pdf-upload" accept=".pdf" style="display:none" onchange="extractPDF(this)">
+                <input type="file" id="logo-upload" accept="image/*,.svg" style="display:none" onchange="handleMediaUpload(this,'logo')">
               </div>
-              
-              <!-- Bottom Action Bar (Fixed on mobile) -->
-              <div class="action-bar-mobile" style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)">
-                <button class="btn btn-primary" onclick="savePageContent()" style="flex:1" data-i18n="prom.save">Save to Supabase</button>
-                <button class="btn btn-secondary" onclick="previewPage()" data-i18n="prom.preview">Preview</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- ── WEBPAGE PREVIEW ── -->
-          <div class="card" style="margin-top:1rem;padding:0;overflow:hidden">
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.1rem;border-bottom:1px solid var(--border)">
-              <div style="font-size:0.85rem;font-weight:600;color:var(--text)">Webpage Preview — <span id="preview-section-label" style="color:var(--gold)">Homepage</span></div>
-              <div style="display:flex;gap:0.5rem;align-items:center">
-                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('desktop')" id="prev-desk" style="background:var(--gold-dim);border-color:var(--border2);color:var(--gold)">🖥 Desktop</button>
-                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('mobile')" id="prev-mob">📱 Mobile</button>
-                <button class="btn btn-primary btn-sm" onclick="refreshPreview()">↻ Refresh</button>
-              </div>
-            </div>
-            <!-- Browser chrome bar -->
-            <div style="background:var(--bg4);padding:0.4rem 0.75rem;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid var(--border)">
-              <div style="display:flex;gap:5px"><div style="width:10px;height:10px;border-radius:50%;background:#f05252"></div><div style="width:10px;height:10px;border-radius:50%;background:var(--warn)"></div><div style="width:10px;height:10px;border-radius:50%;background:var(--success)"></div></div>
-              <div style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 10px;font-size:0.72rem;color:var(--text3)" id="preview-url-bar">ibizamivida.com/homepage</div>
-            </div>
-            <!-- Live preview iframe -->
-            <div id="preview-wrap" style="width:100%;overflow:hidden;transition:all 0.3s">
-              <iframe id="webpage-preview" style="width:100%;height:520px;border:none;background:#fff" title="Page preview" srcdoc="<html><body style='font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:200px;color:#999;font-size:14px'>Click Refresh to load preview</body></html>"></iframe>
-            </div>
-          </div>
-
-          <!-- ── INSTAGRAM PREVIEW ── -->
-          <div class="card" style="margin-top:1rem">
-            <div style="font-size:0.85rem;font-weight:600;color:var(--text);margin-bottom:0.875rem">Instagram Preview</div>
-            <div class="social-preview" style="max-width:380px">
-              <div class="social-header">
-                <div class="social-avatar">IM</div>
-                <div><div class="social-name">ibizamivida</div><div class="social-handle">@ibizamivida.es</div></div>
-              </div>
-              <div id="ig-preview-img" style="height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:0.8rem">Upload a hero image to see preview</div>
-              <div class="social-caption" id="ig-caption-preview">Your caption will appear here…</div>
-              <div class="social-actions">
-                <button class="social-action-btn">♡ Like</button>
-                <button class="social-action-btn">💬 Comment</button>
-                <button class="social-action-btn">↗ Share</button>
-              </div>
-            </div>
-          </div>
-          </div> <!-- End #promoter-page-editor-form -->
-          
-          <!-- promoter-theme-editor-form -->
-          <div id="promoter-theme-editor-form" style="display:none">
-            <div class="card">
-              <div class="card-title">Vormgeving & Customizer</div>
-              <div style="background:var(--gold-dim);border:1px solid var(--border2);border-radius:8px;padding:1rem;margin-bottom:1.5rem">
-                <div style="font-size:0.85rem;font-weight:600;color:var(--gold);margin-bottom:0.5rem">Website & CMS Styling</div>
-                <div style="font-size:0.75rem;color:var(--text3)">Personaliseer de look van uw Ibiza Mi Vida platform. Deze instellingen bepalen het lettertype, de merkkleuren en het logo op de live website én in het CMS.</div>
-              </div>
-              
-              <div class="form-grid">
-                <div class="form-group">
-                  <label>Website & CMS Lettertype (Font)</label>
-                  <select id="theme-font-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
-                    <option value="Quicksand">Quicksand (Default Sleek)</option>
-                    <option value="Montserrat">Montserrat (Modern Bold)</option>
-                    <option value="Inter">Inter (Clean Neutral)</option>
-                    <option value="Outfit">Outfit (Premium Rounded)</option>
-                    <option value="Poppins">Poppins (Friendly Geometric)</option>
-                    <option value="Playfair Display">Playfair Display (Elegant Serif)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Logo URL (Website & CMS)</label>
-                  <input type="text" id="theme-logo-url-promoter" placeholder="https://example.com/logo.png" oninput="previewLogo(this.value)">
-                </div>
-                <div class="form-group">
-                  <label>Logo Kleur / Filter (Website & CMS)</label>
-                  <select id="theme-logo-filter-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewLogoFilter(this.value)">
-                    <option value="none">Originele Kleur behouden</option>
-                    <option value="brightness(0) invert(1)">Spierwit (White)</option>
-                    <option value="brightness(0)">Pikzwart (Black)</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Achtergrond Kleur (Background)</label>
-                  <div style="display:flex;gap:0.5rem;align-items:center">
-                    <input type="color" id="theme-color-bg-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('bg', this.value)">
-                    <input type="text" id="theme-color-bg-hex-promoter" style="flex:1" placeholder="#0B0B0C" oninput="syncColorInput('bg', this.value)">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Hoofdkleur Accent (Gold/Highlight)</label>
-                  <div style="display:flex;gap:0.5rem;align-items:center">
-                    <input type="color" id="theme-color-gold-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('gold', this.value)">
-                    <input type="text" id="theme-color-gold-hex-promoter" style="flex:1" placeholder="#D4AF37" oninput="syncColorInput('gold', this.value)">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Secundaire Accentkleur (Blue/Buttons)</label>
-                  <div style="display:flex;gap:0.5rem;align-items:center">
-                    <input type="color" id="theme-color-accent-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('accent', this.value)">
-                    <input type="text" id="theme-color-accent-hex-promoter" style="flex:1" placeholder="#5B8CFF" oninput="syncColorInput('accent', this.value)">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Tekst Kleur (Text color)</label>
-                  <div style="display:flex;gap:0.5rem;align-items:center">
-                    <input type="color" id="theme-color-text-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
-                    <input type="text" id="theme-color-text-hex-promoter" style="flex:1" placeholder="#FFFFFF" oninput="syncColorInput('text', this.value)">
-                  </div>
-                </div>
-              </div>
-              
-              <div style="margin-top:1.5rem;background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;display:flex;align-items:center;gap:1rem">
-                <div id="theme-logo-preview-box-promoter" style="width:60px;height:60px;border-radius:50%;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden">
-                  <img id="theme-logo-preview-promoter" src="logo.png" style="width:100%;height:100%;object-fit:contain;filter:brightness(0) invert(1);">
-                </div>
-                <div style="flex:1">
-                  <div style="font-weight:600;font-size:0.82rem;color:var(--text)">Live Preview</div>
-                  <div style="font-size:0.75rem;color:var(--text3)">De bovenstaande elementen passen zich direct aan in deze CMS tab, zodat u de look kunt uitproberen!</div>
-                </div>
-              </div>
-
-              <div class="action-bar-mobile" style="display:flex;gap:0.75rem;margin-top:1.5rem;flex-wrap:wrap">
-                <button class="btn btn-primary" onclick="saveThemeSettings()" style="flex:1">Opslaan & Toepassen 🎨</button>
-                <button class="btn btn-secondary" onclick="previewPage()">Preview</button>
-                <button class="btn btn-secondary" onclick="resetThemeSettings()" style="width:100%">Standaard Herstellen</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- promoter-domains-editor-form -->
-          <div id="promoter-domains-editor-form" style="display:none">
-            <div class="card">
-              <div class="card-title">🌐 Domeinen & Koppelingen</div>
-              <div style="display:flex;flex-direction:column;gap:0.75rem">
-                <div class="lead-card">
-                  <div>
-                    <div style="font-size:0.85rem;font-weight:500">ibizamivida.com</div>
-                    <div style="font-size:0.72rem;color:var(--text3)">Hoofddomein (EN/NL)</div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.5rem">
-                    <div class="status-dot warn"></div>
-                    <span style="font-size:0.75rem;color:var(--warn)">Verbinding in behandeling</span>
-                  </div>
-                </div>
-                <div class="lead-card">
-                  <div>
-                    <div style="font-size:0.85rem;font-weight:500">ibizamivida.es</div>
-                    <div style="font-size:0.72rem;color:var(--text3)">Spaans domein (ES)</div>
-                  </div>
-                  <div style="display:flex;align-items:center;gap:0.5rem">
-                    <div class="status-dot warn"></div>
-                    <span style="font-size:0.75rem;color:var(--warn)">Verbinding in behandeling</span>
-                  </div>
-                </div>
-              </div>
-              <div style="margin-top:1.25rem;font-size:0.8rem;color:var(--text3)">Koppel extra domeinen via uw hosting provider (Vercel / Netlify) en wijs de DNS records naar uw deployment.</div>
             </div>
             
-            <div class="card" style="margin-top:1.5rem">
-              <div class="card-title">🚀 Handmatige Vercel / GitHub Publicatie</div>
-              <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem">
-                <div style="font-size:0.82rem;font-weight:600;color:var(--text);margin-bottom:0.25rem">Handmatige Deploy Trigger</div>
-                <div style="font-size:0.75rem;color:var(--text3)">Druk op de onderstaande knop om direct een nieuwe productieversie van de website te compileren en te pushen via Vercel. Dit vernieuwt de statische caching.</div>
+            <div class="card" style="border-left:4px solid var(--accent);padding:1.25rem;cursor:pointer;transition:all 0.2s" id="editor-block-social">
+              <div style="font-size:1rem;font-weight:700;color:var(--accent);margin-bottom:0.5rem">4. Deal of the Day / Socials</div>
+              <div style="font-size:0.75rem;color:var(--text3);margin-bottom:1rem">Push acties direct naar Instagram & TikTok</div>
+              <div style="display:flex;gap:0.5rem;flex-direction:column">
+                <button class="btn btn-secondary" onclick="pushDealToInstagram()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg> Push to Instagram</button>
+                <button class="btn btn-secondary" onclick="pushDealToTikTok()" style="background:#111;color:#fff;border-color:#111;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:5px"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5v3a8 8 0 0 1-8-8v12a4 4 0 1 1-5-5z"/></svg> Push to TikTok</button>
               </div>
-              <button class="btn btn-primary" onclick="triggerDeploy()">Pushen naar Vercel (Production Build) ⚡</button>
             </div>
+
+            <!-- Hidden legacy elements to avoid breaking JS -->
+            <div style="display:none">
+              <input type="text" id="page-cta" value="Explore Events">
+              <input type="text" id="theme-logo-url-promoter">
+              <select id="theme-logo-filter-promoter"><option value="none"></option></select>
+              <input type="text" id="theme-color-gold-hex-promoter">
+              <input type="text" id="theme-color-accent-hex-promoter">
+            </div>
+            
           </div>
 
+          <!-- RIGHT: LIVE VIEWER WITH CLICK ZONES -->
+          <div class="card" style="padding:0;overflow:hidden;position:relative;height:calc(100vh - 220px);display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1.1rem;border-bottom:1px solid var(--border);background:var(--bg4)">
+              <div style="font-size:0.85rem;font-weight:600;color:var(--text);display:flex;align-items:center;gap:0.5rem">
+                <div style="width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite"></div>
+                Live Preview — <span id="preview-section-label" style="color:var(--gold)">Homepage</span>
+              </div>
+              <div style="display:flex;gap:0.5rem;align-items:center">
+                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('desktop')" id="prev-desk" style="background:var(--gold-dim);border-color:var(--border2);color:var(--gold)">🖥</button>
+                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('mobile')" id="prev-mob">📱</button>
+                <button class="btn btn-primary btn-sm" onclick="refreshPreview()">↻</button>
+              </div>
+            </div>
+            
+            <div id="preview-wrap" style="flex:1;position:relative;overflow:hidden;background:#fff">
+              
+              <!-- Click Overlay Zones to simulate WYSIWYG editing -->
+              <div style="position:absolute;inset:0;z-index:10;pointer-events:none;display:flex;flex-direction:column">
+                <div style="height:80px;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-theme').scrollIntoView({behavior:'smooth'});document.getElementById('logo-upload').click()" title="Klik om Logo aan te passen"></div>
+                <div style="height:350px;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-hero').scrollIntoView({behavior:'smooth'});document.getElementById('page-hero-title').focus()" title="Klik om Tekst / Foto aan te passen"></div>
+                <div style="flex:1;pointer-events:auto;cursor:pointer;border:2px dashed transparent;transition:border 0.2s" onmouseover="this.style.border='2px dashed var(--gold)'" onmouseout="this.style.border='2px dashed transparent'" onclick="document.getElementById('editor-block-content').scrollIntoView({behavior:'smooth'});document.getElementById('page-description').focus()" title="Klik om Content aan te passen"></div>
+              </div>
+
+              <!-- Live preview iframe -->
+              <iframe id="webpage-preview" style="width:100%;height:100%;border:none" title="Page preview" src="https://ibiza-mi-vida-website11.vercel.app/"></iframe>
+            </div>
+          </div>
+          
         </div>
       </div>
-
       <!-- ══════════════ SOCIAL PLANNER ══════════════ -->
       <div class="page" id="page-social">
         <div class="page-header">
@@ -1908,6 +1747,14 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
             <input type="text" id="club-logo" placeholder="https://…" style="flex:1">
             <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('club-logo-upload').click()" style="padding:0 0.75rem;height:42px;display:flex;align-items:center;justify-content:center;gap:0.25rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload</button>
             <input type="file" id="club-logo-upload" accept="image/*" style="display:none" onchange="handleClubLogoUpload(this)">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Background URL / Upload</label>
+          <div style="display:flex;gap:0.4rem">
+            <input type="text" id="club-bg" placeholder="https://…" style="flex:1">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('club-bg-upload').click()" style="padding:0 0.75rem;height:42px;display:flex;align-items:center;justify-content:center;gap:0.25rem"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload</button>
+            <input type="file" id="club-bg-upload" accept="image/*" style="display:none" onchange="handleClubBgUpload(this)">
           </div>
         </div>
         <div class="form-group">
@@ -3179,6 +3026,31 @@ async function handleClubLogoUpload(input){
   }
 }
 
+async function handleClubBgUpload(input){
+  const file=input.files[0];
+  if(!file)return;
+  toast('Uploading background to Supabase Storage...','info');
+  try {
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `bgs/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+
+    const { error: uploadError } = await customSb.storage.from('website_media').upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    if(uploadError) throw new Error(uploadError.message || 'Upload failed');
+    const { data: { publicUrl } } = customSb.storage.from('website_media').getPublicUrl(fileName);
+    document.getElementById('club-bg').value = publicUrl;
+    toast('Club background uploaded successfully ✓','success');
+  } catch(err){
+    console.error('Upload error:',err);
+    toast('Background upload failed: '+err.message,'error');
+  }
+}
+
 function populateSaleEventSelect(){
   const sel=document.getElementById('sale-event');
   sel.innerHTML='<option value="">Select event…</option>'+allEvents.map(e=>`<option value="${e.id}">${e.title}</option>`).join('');
@@ -3293,6 +3165,7 @@ function openClubEditor(idx){
   document.getElementById('club-desc').value=c.desc||'';
   document.getElementById('club-website').value=c.url||'';
   document.getElementById('club-logo').value=c.logo||'';
+  document.getElementById('club-bg').value=c.bg||'';
   document.getElementById('club-genre').value=c.genre||'';
   document.getElementById('club-capacity').value=c.cap||'';
   document.getElementById('add-club-modal').dataset.editIdx=idx;
@@ -3307,6 +3180,7 @@ function saveClub(){
     desc:document.getElementById('club-desc').value,
     url:document.getElementById('club-website').value,
     logo:document.getElementById('club-logo').value,
+    bg:document.getElementById('club-bg').value,
     genre:document.getElementById('club-genre').value,
     cap:parseInt(document.getElementById('club-capacity').value)||0,
     booking: idx>=0 ? clubsData[idx].booking : 'whatsapp',
@@ -3980,17 +3854,17 @@ function loadDayDeals(){
   `).join('');
 }
 
-function pushDealToWebsite(){ 
-  if(!window.confirm("Weet je zeker dat je deze Deal of the Day live wilt pushen naar de website? (in alle drie de talen)")) return;
-  toast('Deal of the Day pushed to website ✓ — all category pages updated', 'success'); 
+function pushAllToWebsite(){ 
+  if(!window.confirm("Wil je zeker dit pushen in alle talen? (Naar de website)")) return;
+  toast('Opgeslagen en naar de website gestuurd! ✓', 'success'); 
 }
 function pushDealToInstagram(){ 
-  if(!window.confirm("Weet je zeker dat je deze Deal of the Day wilt inplannen voor Instagram?")) return;
-  toast('Instagram posts queued for Deal of the Day ✓', 'success'); 
+  if(!window.confirm("Wil je zeker dit pushen in alle talen? (Naar Instagram)")) return;
+  toast('Instagram post is ingepland! ✓', 'success'); 
 }
 function pushDealToTikTok(){ 
-  if(!window.confirm("Weet je zeker dat je deze Deal of the Day wilt inplannen voor TikTok?")) return;
-  toast('TikTok video queued for Deal of the Day ✓', 'success'); 
+  if(!window.confirm("Wil je zeker dit pushen in alle talen? (Naar TikTok)")) return;
+  toast('TikTok video is ingepland! ✓', 'success'); 
 }
 
 function saveCalendarItem(){
