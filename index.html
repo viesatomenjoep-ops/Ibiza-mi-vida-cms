@@ -1456,6 +1456,105 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
         </div>
       </div>
 
+      <!-- ══════════════ BLOG & NEWSFEED ══════════════ -->
+      <div class="page" id="page-blog">
+        <div class="page-header">
+          <div class="page-title">Nieuws & Blog Manager</div>
+          <div class="page-sub">Beheer hier al je artikelen voor de Blog, Newsfeed en Ibiza News Region. (Upload iedere keer nieuwe content).</div>
+        </div>
+        
+        <div class="card" style="margin-bottom:1.5rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+            <div style="display:flex;gap:0.5rem;flex:1;min-width:250px">
+              <input type="text" id="blog-search" placeholder="Zoek artikelen..." class="search-input" oninput="filterBlogs()">
+              <select id="blog-filter-cat" style="padding:0.75rem;border-radius:8px;border:1px solid var(--border);background:var(--bg2);color:var(--text)" onchange="filterBlogs()">
+                <option value="">Alle Categorieën</option>
+                <option value="blog">Blog</option>
+                <option value="newsfeed">Newsfeed</option>
+                <option value="ibiza-news">Ibiza News Region</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="openBlogEditor(-1)">+ Nieuw Artikel Toevoegen</button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Afbeelding</th>
+                <th>Titel (EN/ES/NL)</th>
+                <th>Categorie</th>
+                <th>Datum</th>
+                <th>Acties</th>
+              </tr>
+            </thead>
+            <tbody id="blog-tbody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Blog Editor Modal -->
+      <div class="modal-backdrop" id="blog-modal">
+        <div class="modal" style="max-width:800px;width:95%">
+          <div class="modal-header">
+            <div class="modal-title" id="blog-modal-title">Nieuw Artikel</div>
+            <button class="modal-close" onclick="closeModal('blog-modal')">✕</button>
+          </div>
+          <div class="modal-body" style="max-height:75vh;overflow-y:auto">
+            <div class="form-grid">
+              <div class="form-group span2">
+                <label>Categorie *</label>
+                <select id="blog-form-cat">
+                  <option value="blog">Blog</option>
+                  <option value="newsfeed">Newsfeed</option>
+                  <option value="ibiza-news">Ibiza News Region</option>
+                </select>
+              </div>
+              <div class="form-group span2">
+                <label>Titel (Engels) *</label>
+                <input type="text" id="blog-title-en" placeholder="Article Title...">
+              </div>
+              <div class="form-group span2">
+                <label>Titel (Spaans)</label>
+                <input type="text" id="blog-title-es" placeholder="Título del artículo...">
+              </div>
+              <div class="form-group span2">
+                <label>Titel (Nederlands)</label>
+                <input type="text" id="blog-title-nl" placeholder="Titel van het artikel...">
+              </div>
+              
+              <div class="form-group span2" style="margin-top:1rem">
+                <label>Content (Volledig Artikel) - Wordt vertaald naar EN/ES/NL template</label>
+                <textarea id="blog-content" rows="8" placeholder="Schrijf hier je artikel..."></textarea>
+              </div>
+              
+              <div class="form-group span2" style="margin-top:1rem">
+                <label>Omslagfoto (Hero Image) Upload</label>
+                <div class="img-upload-box" onclick="document.getElementById('blog-img-upload').click()">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:0.5rem"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <div>Klik om foto te uploaden</div>
+                </div>
+                <input type="file" id="blog-img-upload" accept="image/*" style="display:none" onchange="handleBlogImageUpload(this)">
+                <input type="hidden" id="blog-img-url">
+                <img id="blog-img-preview" style="display:none;width:100%;max-height:200px;object-fit:cover;border-radius:8px;margin-top:1rem">
+              </div>
+              
+              <div class="form-group span2">
+                <label>Publicatie Datum</label>
+                <input type="date" id="blog-date">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeModal('blog-modal')">Annuleren</button>
+            <button class="btn btn-primary" onclick="saveBlog()">Opslaan & Publiceren</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ══════════════ SETTINGS ══════════════ -->
       <div class="page" id="page-settings">
         <div class="page-header">
@@ -4053,6 +4152,134 @@ function updateReviewStats(){
   document.getElementById('dot-es-5star').textContent=es.filter(r=>r.rating===5).length;
 }
 
+
+// ── BLOG MANAGEMENT ──
+let blogPosts = [];
+try { blogPosts = JSON.parse(localStorage.getItem('blog_posts_ibiza') || '[]'); } catch(e){}
+
+function renderBlogs() {
+  const tbody = document.getElementById('blog-tbody');
+  if(!tbody) return;
+  const q = document.getElementById('blog-search')?.value.toLowerCase() || '';
+  const c = document.getElementById('blog-filter-cat')?.value || '';
+  
+  const filtered = blogPosts.filter(b => {
+    const matchQ = b.titleEn.toLowerCase().includes(q) || b.titleNl.toLowerCase().includes(q);
+    const matchC = c ? b.category === c : true;
+    return matchQ && matchC;
+  });
+  
+  tbody.innerHTML = filtered.map((b, i) => {
+    const origIndex = blogPosts.indexOf(b);
+    return `
+      <tr>
+        <td><img src="${b.imgUrl || 'logo.png'}" style="width:50px;height:50px;border-radius:6px;object-fit:cover;border:1px solid var(--border)"></td>
+        <td>
+          <div style="font-weight:600">${b.titleEn}</div>
+          <div style="font-size:0.75rem;color:var(--text3)">NL: ${b.titleNl || 'Geen'} · ES: ${b.titleEs || 'Geen'}</div>
+        </td>
+        <td><span class="badge badge-primary">${b.category}</span></td>
+        <td>${b.date || 'Direct'}</td>
+        <td>
+          <button class="btn btn-secondary btn-sm" onclick="openBlogEditor(${origIndex})">Bewerken</button>
+          <button class="btn btn-secondary btn-sm" style="color:var(--danger)" onclick="deleteBlog(${origIndex})">Verwijderen</button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function filterBlogs() { renderBlogs(); }
+
+function openBlogEditor(idx) {
+  const modal = document.getElementById('blog-modal');
+  modal.dataset.idx = idx;
+  if(idx >= 0) {
+    const b = blogPosts[idx];
+    document.getElementById('blog-modal-title').textContent = 'Artikel Bewerken';
+    document.getElementById('blog-form-cat').value = b.category;
+    document.getElementById('blog-title-en').value = b.titleEn;
+    document.getElementById('blog-title-es').value = b.titleEs || '';
+    document.getElementById('blog-title-nl').value = b.titleNl || '';
+    document.getElementById('blog-content').value = b.content || '';
+    document.getElementById('blog-date').value = b.date || '';
+    document.getElementById('blog-img-url').value = b.imgUrl || '';
+    if(b.imgUrl) {
+      document.getElementById('blog-img-preview').src = b.imgUrl;
+      document.getElementById('blog-img-preview').style.display = 'block';
+    } else {
+      document.getElementById('blog-img-preview').style.display = 'none';
+    }
+  } else {
+    document.getElementById('blog-modal-title').textContent = 'Nieuw Artikel';
+    document.getElementById('blog-form-cat').value = 'blog';
+    document.getElementById('blog-title-en').value = '';
+    document.getElementById('blog-title-es').value = '';
+    document.getElementById('blog-title-nl').value = '';
+    document.getElementById('blog-content').value = '';
+    document.getElementById('blog-date').value = new Date().toISOString().slice(0,10);
+    document.getElementById('blog-img-url').value = '';
+    document.getElementById('blog-img-preview').style.display = 'none';
+  }
+  showModal('blog-modal');
+}
+
+async function handleBlogImageUpload(input) {
+  const file = input.files[0];
+  if(!file) return;
+  toast('Uploading article image...', 'info');
+  try {
+    const activeUrl = SUPABASE_URL;
+    const sbKey = SUPABASE_SERVICE;
+    const customSb = supabase.createClient(activeUrl, sbKey);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `blog/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const { error: uploadError } = await customSb.storage.from('website_media').upload(fileName, file, { cacheControl: '3600', upsert: false });
+    if(uploadError) throw new Error(uploadError.message || 'Upload failed');
+    const { data: { publicUrl } } = customSb.storage.from('website_media').getPublicUrl(fileName);
+    document.getElementById('blog-img-url').value = publicUrl;
+    document.getElementById('blog-img-preview').src = publicUrl;
+    document.getElementById('blog-img-preview').style.display = 'block';
+    toast('Image uploaded successfully ✓','success');
+  } catch(err){
+    toast('Image upload failed: '+err.message,'error');
+  }
+}
+
+function saveBlog() {
+  const idx = parseInt(document.getElementById('blog-modal').dataset.idx);
+  const payload = {
+    category: document.getElementById('blog-form-cat').value,
+    titleEn: document.getElementById('blog-title-en').value,
+    titleEs: document.getElementById('blog-title-es').value,
+    titleNl: document.getElementById('blog-title-nl').value,
+    content: document.getElementById('blog-content').value,
+    date: document.getElementById('blog-date').value,
+    imgUrl: document.getElementById('blog-img-url').value
+  };
+  
+  if(!payload.titleEn) { toast('Titel (Engels) is verplicht','error'); return; }
+  
+  if(!window.confirm("Wil je zeker dit artikel pushen in alle talen? (Naar de website)")) return;
+
+  if(idx >= 0) blogPosts[idx] = payload;
+  else blogPosts.unshift(payload);
+  
+  localStorage.setItem('blog_posts_ibiza', JSON.stringify(blogPosts));
+  renderBlogs();
+  closeModal('blog-modal');
+  toast('Artikel succesvol gepubliceerd in EN/ES/NL ✓', 'success');
+}
+
+function deleteBlog(idx) {
+  if(window.confirm('Artikel definitief verwijderen?')) {
+    blogPosts.splice(idx, 1);
+    localStorage.setItem('blog_posts_ibiza', JSON.stringify(blogPosts));
+    renderBlogs();
+    toast('Artikel verwijderd', 'info');
+  }
+}
+
 // ── EXCEL IMPORT ──
 function importExcel(input){
   const file=input.files[0];
@@ -4394,7 +4621,7 @@ async function loadInteractivePreview(url) {
           target.style.outlineOffset = '-3px';
           setTimeout(() => target.style.outline = oldOutline, 1500);
         }, true);
-      </script>
+      <\/script>
     `;
     html = html.replace('</body>', `${script}</body>`);
     iframe.srcdoc = html;
