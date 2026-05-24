@@ -903,6 +903,30 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 </div>
               </div>
               <div class="form-group" style="margin-bottom:1rem">
+                <label>Lettertype (Font)</label>
+                <select id="theme-font-promoter" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="previewFont(this.value)">
+                  <option value="Quicksand">Quicksand (Default Sleek)</option>
+                  <option value="Montserrat">Montserrat (Modern Bold)</option>
+                  <option value="Inter">Inter (Clean Neutral)</option>
+                  <option value="Outfit">Outfit (Premium Rounded)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Lettergrootte (Base Size)</label>
+                <div style="display:flex;gap:0.5rem;align-items:center">
+                  <input type="range" id="theme-font-size-promoter" min="12" max="24" value="16" style="flex:1;accent-color:var(--gold)" oninput="document.getElementById('font-size-val').textContent=this.value+'px'; document.documentElement.style.setProperty('--font-size', this.value+'px')">
+                  <span id="font-size-val" style="font-size:0.8rem;color:var(--gold);font-weight:600;min-width:40px">16px</span>
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom:1rem">
+                <label>Logo Kleur</label>
+                <select id="theme-logo-filter-visible" style="width:100%;height:38px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;color:var(--text);padding:0 0.5rem" onchange="document.getElementById('theme-logo-filter-promoter').value=this.value; previewLogoFilter(this.value)">
+                  <option value="none">Originele Kleur</option>
+                  <option value="brightness(0) invert(1)">Wit (White)</option>
+                  <option value="brightness(0)">Zwart (Black)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin-bottom:1rem">
                 <label>Tekst Kleur</label>
                 <div style="display:flex;gap:0.5rem;align-items:center">
                   <input type="color" id="theme-color-text-promoter" style="width:40px;height:38px;padding:0;border:none;background:none;cursor:pointer" oninput="previewColor('text', this.value)">
@@ -947,8 +971,9 @@ button, input, select, textarea, .nav-item, .tab, .btn, .cal-day {
                 Live Preview — <span id="preview-section-label" style="color:var(--gold)">Homepage</span>
               </div>
               <div style="display:flex;gap:0.5rem;align-items:center">
-                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('desktop')" id="prev-desk" style="background:var(--gold-dim);border-color:var(--border2);color:var(--gold)">🖥</button>
-                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('mobile')" id="prev-mob">📱</button>
+                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('desktop')" id="prev-desk" style="background:var(--gold-dim);border-color:var(--border2);color:var(--gold)" title="Desktop">🖥</button>
+                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('tablet')" id="prev-tab" title="Tablet">📟</button>
+                <button class="btn btn-secondary btn-sm" onclick="togglePreviewDevice('mobile')" id="prev-mob" title="Mobiel">📱</button>
                 <button class="btn btn-primary btn-sm" onclick="refreshPreview()">↻</button>
               </div>
             </div>
@@ -4374,14 +4399,21 @@ function togglePreviewDevice(device){
   previewDevice = device;
   const wrap = document.getElementById('preview-wrap');
   const iframe = document.getElementById('webpage-preview');
+  
   document.getElementById('prev-desk').style.cssText = device==='desktop' ? 'background:var(--gold-dim);border-color:var(--border2);color:var(--gold)' : '';
+  const tabBtn = document.getElementById('prev-tab');
+  if(tabBtn) tabBtn.style.cssText = device==='tablet' ? 'background:var(--gold-dim);border-color:var(--border2);color:var(--gold)' : '';
   document.getElementById('prev-mob').style.cssText  = device==='mobile'  ? 'background:var(--gold-dim);border-color:var(--border2);color:var(--gold)' : '';
+  
   if(device==='mobile'){
     wrap.style.cssText='display:flex;justify-content:center;background:var(--bg4);padding:16px;transition:all 0.3s;max-width:100%;overflow:hidden';
-    iframe.style.cssText='width:375px;max-width:100%;height:520px;border:none;border-radius:12px;box-shadow:0 0 0 8px #222';
+    iframe.style.cssText='width:375px;max-width:100%;height:100%;border:none;border-radius:12px;box-shadow:0 0 0 8px #222';
+  } else if(device==='tablet'){
+    wrap.style.cssText='display:flex;justify-content:center;background:var(--bg4);padding:16px;transition:all 0.3s;max-width:100%;overflow:hidden';
+    iframe.style.cssText='width:768px;max-width:100%;height:100%;border:none;border-radius:12px;box-shadow:0 0 0 8px #222';
   } else {
     wrap.style.cssText='width:100%;overflow:hidden;transition:all 0.3s';
-    iframe.style.cssText='width:100%;height:520px;border:none;background:#fff';
+    iframe.style.cssText='width:100%;height:100%;border:none;background:#fff';
   }
 }
 
